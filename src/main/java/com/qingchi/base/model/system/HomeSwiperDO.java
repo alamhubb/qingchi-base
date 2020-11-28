@@ -34,6 +34,6 @@ public class HomeSwiperDO implements Serializable {
     private Integer topLevel;
     @Column(columnDefinition = "bit default true")
     private Boolean skip;
-    @Column(columnDefinition = "varchar(255) default web")
+    @Column(columnDefinition = "varchar(255) default 'web'")
     private String skipType;
 }
