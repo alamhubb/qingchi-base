@@ -3,6 +3,7 @@ package com.qingchi.base.model.chat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.qingchi.base.constant.ChatType;
 import com.qingchi.base.constant.ChatUserStatus;
+import com.qingchi.base.constant.CommonStatus;
 import lombok.Data;
 import lombok.ToString;
 
@@ -18,9 +19,9 @@ import java.util.Date;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity
 @Table(name = "chatUser", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"userId", "chatId"})
+        @UniqueConstraint(columnNames = {"userId", "chatId"}),
+        @UniqueConstraint(columnNames = {"userId", "receiveUserId"})
 })
-@ToString(exclude = "chat")
 public class ChatUserDO {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -79,7 +80,7 @@ public class ChatUserDO {
     public ChatUserDO(Long chatId, Integer userId, String chatType) {
         this.chatId = chatId;
         this.userId = userId;
-        this.status = ChatUserStatus.enable;
+        this.status = CommonStatus.normal;
         if (ChatType.systemChats.contains(chatType)) {
             this.topFlag = true;
         } else {

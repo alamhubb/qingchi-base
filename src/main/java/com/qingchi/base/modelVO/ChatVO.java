@@ -51,6 +51,7 @@ public class ChatVO {
     private String nickname;
     private String avatar;
     private String type;
+    private String status;
     private Date updateTime;
     private List<MessageVO> messages;
     private Integer unreadNum;
@@ -79,6 +80,7 @@ public class ChatVO {
         this.topLevel = chatDO.getTopLevel();
         this.lastContent = chatDO.getLastContent();
         this.unreadNum = 0;
+        this.messages = new ArrayList<>();
     }
 
     //初始查询的时候为99
@@ -122,6 +124,7 @@ public class ChatVO {
         this.unreadNum = chatUserDO.getUnreadNum();
         this.updateTime = chatUserDO.getUpdateTime();
         this.lastContent = chatUserDO.getLastContent();
+        this.status = chatUserDO.getStatus();
     }
 
     public ChatVO(ChatDO chatDO, ChatUserDO chatUserDO, boolean queryMsgFlag) {

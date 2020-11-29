@@ -1,6 +1,7 @@
 package com.qingchi.base.model.chat;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.qingchi.base.constant.ChatStatus;
 import com.qingchi.base.constant.ChatTopType;
 import com.qingchi.base.constant.ChatType;
 import com.qingchi.base.constant.CommonStatus;
@@ -60,7 +61,6 @@ public class ChatDO implements Serializable {
         Date curDate = new Date();
         this.createTime = curDate;
         this.updateTime = curDate;
-        this.status = CommonStatus.normal;
         this.topFlag = false;
         this.topLevel = ChatTopType.simple;
     }
@@ -68,8 +68,13 @@ public class ChatDO implements Serializable {
     public ChatDO(String type) {
         this();
         this.type = type;
+        //如果为匹配
         if (ChatType.match.equals(type)) {
+            this.status = CommonStatus.normal;
             this.matchStatus = CommonStatus.waitMatch;
+        } else if (ChatType.single.equals(type)) {
+            //如果为私聊，则默认为待开启状态，需要有一方发送消息后，才改为开启状态
+            this.status = CommonStatus.waitOpen;
         }
     }
 

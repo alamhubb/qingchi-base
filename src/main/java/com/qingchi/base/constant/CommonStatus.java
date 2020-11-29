@@ -29,8 +29,12 @@ public class CommonStatus {
     public static final String lose = "失效";//失效
     public static final String destroy = "注销";//失效
 
+    //chat特有
+
     //chat_user match相关
     public static final String waitMatch = "待匹配";
+    //待开启，需要有一方发送一条消息后，才改为开启状态
+    public static final String waitOpen = "待开启";
 
     //消息专属
     //每次发送消息，查询所有状态为未发送的和此次的一起发送，成功则变成未读，
