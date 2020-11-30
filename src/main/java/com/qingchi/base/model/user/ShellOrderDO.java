@@ -2,6 +2,7 @@ package com.qingchi.base.model.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.qingchi.base.constant.CommonStatus;
+import com.qingchi.base.constant.ExpenseType;
 import com.qingchi.base.constant.ShellOrderType;
 import lombok.Data;
 
@@ -39,11 +40,15 @@ public class ShellOrderDO implements Serializable {
     private Integer vipOrderId;
 
     private Integer userContactId;
+    //消费类型，开启会话，获取联系方式
+    private String expenseType;
+    //备注
+    private String expenseDetailType;
 
     public ShellOrderDO() {
     }
 
-    public ShellOrderDO(Integer userId, Integer shell, String type) {
+    public ShellOrderDO(Integer userId, Integer shell, String type, String expenseType) {
         this.userId = userId;
         this.shell = shell;
         this.absoluteShell = Math.abs(shell);
@@ -52,28 +57,26 @@ public class ShellOrderDO implements Serializable {
         this.updateTime = date;
         this.status = CommonStatus.normal;
         this.type = type;
+        this.expenseType = expenseType;
+        this.expenseDetailType = expenseType;
     }
 
-    public ShellOrderDO(Integer userId, Integer shell, String type, Integer userContactId) {
-        this.userId = userId;
-        this.shell = shell;
-        this.absoluteShell = Math.abs(shell);
-        Date date = new Date();
-        this.createTime = date;
-        this.updateTime = date;
-        this.status = CommonStatus.normal;
-        this.type = type;
+    public ShellOrderDO(Integer userId, Integer shell, String type, String expenseType, String expenseDetailType, Integer userContactId) {
+        this(userId, shell, type, expenseType);
+        this.expenseDetailType = expenseDetailType;
         this.userContactId = userContactId;
     }
 
-    public ShellOrderDO(Integer userId, Integer shell, Integer userContactId, Integer relatedOrderId) {
-        this(userId, shell, ShellOrderType.receive, userContactId);
+    //被赠予shell调用的
+    public ShellOrderDO(Integer userId, Integer shell, String expenseType, String expenseDetailType, Integer userContactId, Integer relatedOrderId) {
+        this(userId, shell, ShellOrderType.receive, expenseType, expenseDetailType, userContactId);
         this.relatedOrderId = relatedOrderId;
 // todo       relatedOrder.relatedOrder = this;
     }
 
+    //充值shell调用的
     public ShellOrderDO(Integer userId, Integer shell, Integer vipOrderId) {
-        this(userId, shell, ShellOrderType.recharge);
+        this(userId, shell, ShellOrderType.recharge, ExpenseType.rechargeShell);
         this.vipOrderId = vipOrderId;
     }
 }

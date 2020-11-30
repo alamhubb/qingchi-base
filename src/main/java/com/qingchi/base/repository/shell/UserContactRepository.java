@@ -12,10 +12,7 @@ import java.util.Optional;
  * @date 2018-10-17 21:59
  */
 public interface UserContactRepository extends JpaRepository<UserContactDO, Integer> {
-    @CacheEvict(cacheNames = RedisKeysConst.userById, key = "#userContact.userId")
-    UserContactDO save(UserContactDO userContact);
-
-    Optional<UserContactDO> findFirstByUserIdAndBeUserIdAndStatus(Integer userId, Integer beUserId, String status);
+    Optional<UserContactDO> findFirstByUserIdAndBeUserIdAndStatus(Integer userId, Integer beUserId, String status, String type);
 }
 
 

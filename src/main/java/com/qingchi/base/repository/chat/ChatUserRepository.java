@@ -21,6 +21,7 @@ public interface ChatUserRepository extends JpaRepository<ChatUserDO, Long> {
 */
 
     Optional<ChatUserDO> findFirstByChatIdAndUserIdAndStatus(Long chatId, Integer userId, String status);
+    Optional<ChatUserDO> findFirstByChatIdAndUserId(Long chatId, Integer userId);
 
     Optional<ChatUserDO> findFirstByUserIdAndReceiveUserId(Integer userId, Integer receiveUserId);
 

@@ -14,7 +14,7 @@ import java.util.Date;
  */
 @Data
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@Table(name = "user_contact", uniqueConstraints = @UniqueConstraint(columnNames = {"userId", "beUserId"}))
+@Table(name = "user_contact", uniqueConstraints = @UniqueConstraint(columnNames = {"userId", "beUserId", "type"}))
 @Entity
 public class UserContactDO implements Serializable {
     //必有
@@ -31,6 +31,7 @@ public class UserContactDO implements Serializable {
 
     //用户状态，暂未使用正常，封禁
     private String status;
+    private String type;
 
     public UserContactDO() {
         Date curDate = new Date();
@@ -39,14 +40,10 @@ public class UserContactDO implements Serializable {
         this.status = CommonStatus.normal;
     }
 
-    public UserContactDO(Integer userId) {
-        this();
-        this.userId = userId;
-    }
-
-    public UserContactDO(Integer userId, Integer beUserId) {
+    public UserContactDO(Integer userId, Integer beUserId, String type) {
         this();
         this.userId = userId;
         this.beUserId = beUserId;
+        this.type = type;
     }
 }

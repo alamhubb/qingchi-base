@@ -34,6 +34,7 @@ public class AppConfigConst {
 
     //获取联系方式消费贝壳数量
     public static final String contactExpenseShellKey = "contactExpenseShell";
+    public static final String openChatExpenseShellKey = "开启会话需要支付的贝壳数量";
     //系统抽成比例
     public static final String sysServiceReceiveRatioKey = "sysServiceReceiveRatio";
 
