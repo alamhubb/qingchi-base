@@ -48,7 +48,10 @@ public class ChatUserDO {
     private String status;
     private Integer unreadNum;
     private String lastContent;
+    //是否为陌生人
     private Boolean stranger;
+    //是否在前台显示
+    private Boolean frontShow;
     //你是否能向对方发送消息，如果能，则允许，如果不能，则判断剩余条数
     //如果关注，或者开启了buyMsg，且数量大于0
 
