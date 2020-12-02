@@ -99,8 +99,19 @@ public class ChatUserDO {
 
     //私聊，对方用户，方便获取对方的头像昵称，展示
     public ChatUserDO(Long chatId, Integer userId, Integer receiveUserId, String chatType) {
-        this(chatId, userId,chatType);
+        this(chatId, userId, chatType);
         this.unreadNum = 1;
         this.receiveUserId = receiveUserId;
     }
+
+    //创建私聊时，需要根据chat状态决定chatUser状态，有两种情况，直接开启和待开启
+    public ChatUserDO(ChatDO chatDO, Integer userId, Integer receiveUserId) {
+        this(chatDO.getId(), userId, receiveUserId, chatDO.getType());
+        this.status = chatDO.getStatus();
+        //如果直接开启，则前台需要改为显示状态
+        if (chatDO.getStatus().equals(CommonStatus.normal)) {
+            this.frontShow = true;
+        }
+    }
+
 }

@@ -78,6 +78,13 @@ public class ChatDO implements Serializable {
         }
     }
 
+    //私聊开启会话，可能是直接付费开启，或者进入chat页面，不开启
+    public ChatDO(String type, String status) {
+        this(type);
+        this.status = status;
+    }
+
+
     /*public UserDO getReceiveUser(Integer userId) {
         return this.getUsers().stream().filter((Integer userIdItem) -> !userItem.getId().equals(user.getId())).findAny().get();
     }
