@@ -52,6 +52,8 @@ public class ChatUserDO {
     private Boolean stranger;
     //是否在前台显示
     private Boolean frontShow;
+    //开启会话的类型，付费开启，被付费开启，普通发起，普通被发起
+    private String openChatType;
     //你是否能向对方发送消息，如果能，则允许，如果不能，则判断剩余条数
     //如果关注，或者开启了buyMsg，且数量大于0
 
