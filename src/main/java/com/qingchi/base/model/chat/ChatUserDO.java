@@ -60,8 +60,6 @@ public class ChatUserDO {
     //这样的话，发消息的时候就不需要再去查询是否是好友和关注了
     //只需要判断这一个，每次更改，对方未关注你，且还不是你的好友
     private Boolean allowSendMsg;
-    //只有当对方未关注你，且还不是你的好友，才需要使用这个字段判断。
-    private Boolean byMsg;
 
     //剩余允许发送数量，只有没被关注，且购买了，才需要这个
     private Integer msgRemainNum;
@@ -95,25 +93,37 @@ public class ChatUserDO {
         this.createTime = curDate;
         this.updateTime = curDate;
         //为什么不设置成99，因为此版本没有阅读功能？先试试99
-        this.unreadNum = 99;
+        this.unreadNum = 0;
         this.lastContent = "";
+        this.frontShow = false;
     }
 
-    //私聊，对方用户，方便获取对方的头像昵称，展示
+    //私聊，对方用户，方便获取对方的头像昵称，展示, 匹配模块有使用
     public ChatUserDO(Long chatId, Integer userId, Integer receiveUserId, String chatType) {
         this(chatId, userId, chatType);
-        this.unreadNum = 1;
+        //这里需要看一下，匹配情况，是否要改为1
+        this.unreadNum = 0;
         this.receiveUserId = receiveUserId;
     }
 
-    //创建私聊时，需要根据chat状态决定chatUser状态，有两种情况，直接开启和待开启
+    //创建私聊时，需要根据chat状态决定chatUser状态，有两种情况，直接开启和待开启，msg可删除时，则无需再使用lastcontent
     public ChatUserDO(ChatDO chatDO, Integer userId, Integer receiveUserId) {
         this(chatDO.getId(), userId, receiveUserId, chatDO.getType());
         this.status = chatDO.getStatus();
-        //如果直接开启，则前台需要改为显示状态
+        //只有支付开启的时候，直接在对方前台显示
+        //待开启的情况，只把自己的改为show
         if (chatDO.getStatus().equals(CommonStatus.normal)) {
             this.frontShow = true;
         }
+        //如果直接开启，则前台需要改为显示状态
+        //没有msg的时候显示lastcontent,
+        /*
+        //前台根据状态判断显示就好
+        if (chatDO.getStatus().equals(CommonStatus.waitOpen)) {
+            this.lastContent = "会话未开启";
+        } else {
+            this.lastContent = "会话已开启";
+        }*/
     }
 
 }

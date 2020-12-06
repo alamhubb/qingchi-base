@@ -61,6 +61,10 @@ public class ChatVO {
     private String lastContent;
     private Boolean vipFlag;
 
+    //只有当对方未关注你，且还不是你的好友，才需要使用这个字段判断。
+    //需要支付开启会话
+    private Boolean needPayOpen;
+
     public ChatVO() {
     }
 
@@ -81,6 +85,7 @@ public class ChatVO {
         this.lastContent = chatDO.getLastContent();
         this.unreadNum = 0;
         this.messages = new ArrayList<>();
+        this.needPayOpen = true;
     }
 
     //初始查询的时候为99

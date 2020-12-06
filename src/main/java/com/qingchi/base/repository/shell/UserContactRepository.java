@@ -12,7 +12,7 @@ import java.util.Optional;
  * @date 2018-10-17 21:59
  */
 public interface UserContactRepository extends JpaRepository<UserContactDO, Integer> {
-    Optional<UserContactDO> findFirstByUserIdAndBeUserIdAndStatus(Integer userId, Integer beUserId, String status, String type);
+    Optional<UserContactDO> findFirstByUserIdAndBeUserIdAndStatusAndType(Integer userId, Integer beUserId, String status, String type);
 }
 
 
