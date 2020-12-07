@@ -49,6 +49,7 @@ public class ChatVO {
 
     private Long id;
     private String nickname;
+    private Integer receiveUserId;
     private String avatar;
     private String type;
     private String status;
@@ -123,6 +124,7 @@ public class ChatVO {
             this.nickname = receiveUser.getNickname();
             this.avatar = receiveUser.getAvatar();
             this.vipFlag = receiveUser.getVipFlag();
+            this.receiveUserId = receiveUser.getId();
         }
         //chat的最后一条消息时间大家都一样，把最后一条删除也是最后一条的时间
         this.topFlag = chatUserDO.getTopFlag();

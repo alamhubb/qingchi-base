@@ -7,6 +7,8 @@ package com.qingchi.base.constant;
  */
 public class OpenChatType {
     public static final String payOpen = "付费开启";//启用
+    public static final String normalOpen = "普通开启";//启用
+    public static final String normalReceiveOpen = "普通被开启";//启用
     //chat_user match相关
     public static final String receivePayOpen = "被付费开启";
 }
