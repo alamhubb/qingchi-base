@@ -80,46 +80,47 @@ public class NotifyService {
                 throw new ResultException("错误的通知类型");
             }
 
-            //评论动态
-            switch (notifyType) {
-                case NotifyType.talk_comment:
-                    pushMsgDTO = TalkCommentPushUtils.getTalkPushDTO(provider, notify, requestUser);
-                    break;
-                case NotifyType.comment_comment:
-                case NotifyType.reply_comment:
-                    pushMsgDTO = CommentPushUtils.getCommentPushDTO(provider, notify, requestUser);
-                    //回复评论
-                    break;
-                case NotifyType.report_result:
-                    pushMsgDTO = ReportResultPushUtils.getReportResultPushDTO(provider, notify);
-                    break;
-                case NotifyType.violation:
-                    pushMsgDTO = ViolationPushUtils.getViolationPushDTO(provider, notify);
-                    break;
-                case NotifyType.message:
-                    Optional<MessageReceiveDO> messageReceiveDOOptional = messageReceiveRepository.findById(notify.getMessageReceiveId());
-                    MessageReceiveDO messageReceiveDO = messageReceiveDOOptional.get();
-                    Optional<ChatUserDO> chatUserDOOptional = chatUserRepository.findById(messageReceiveDO.getChatUserId());
-                    ChatUserDO chatUserDO = chatUserDOOptional.get();
-                    Optional<ChatDO> chatDOOptional = chatRepository.findById(chatUserDO.getChatId());
-                    //如果群聊，直接发送给两个服务器在线的所有用户，并且查找他们未读的。
-                    //未登录的时候也查询群聊里面的所有内容
-                    NotifyVO notifyVO = new NotifyVO(notify, requestUser, messageReceiveDO, chatUserDO, chatDOOptional.get());
-                    try {
-                        stringRedisTemplate.convertAndSend(receiveUserId, JsonUtils.objectMapper.writeValueAsString(notifyVO));
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
-                    }
-                    break;
-            }
+            if (NotifyType.message.equals(notifyType)) {
+                Optional<MessageReceiveDO> messageReceiveDOOptional = messageReceiveRepository.findById(notify.getMessageReceiveId());
+                MessageReceiveDO messageReceiveDO = messageReceiveDOOptional.get();
+                Optional<ChatUserDO> chatUserDOOptional = chatUserRepository.findById(messageReceiveDO.getChatUserId());
+                ChatUserDO chatUserDO = chatUserDOOptional.get();
+                Optional<ChatDO> chatDOOptional = chatRepository.findById(chatUserDO.getChatId());
+                //如果群聊，直接发送给两个服务器在线的所有用户，并且查找他们未读的。
+                //未登录的时候也查询群聊里面的所有内容
+                NotifyVO notifyVO = new NotifyVO(notify, requestUser, messageReceiveDO, chatUserDO, chatDOOptional.get());
+                try {
+                    stringRedisTemplate.convertAndSend(receiveUserId, JsonUtils.objectMapper.writeValueAsString(notifyVO));
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                //评论动态
+                switch (notifyType) {
+                    case NotifyType.talk_comment:
+                        pushMsgDTO = TalkCommentPushUtils.getTalkPushDTO(provider, notify, requestUser);
+                        break;
+                    case NotifyType.comment_comment:
+                    case NotifyType.reply_comment:
+                        pushMsgDTO = CommentPushUtils.getCommentPushDTO(provider, notify, requestUser);
+                        //回复评论
+                        break;
+                    case NotifyType.report_result:
+                        pushMsgDTO = ReportResultPushUtils.getReportResultPushDTO(provider, notify);
+                        break;
+                    case NotifyType.violation:
+                        pushMsgDTO = ViolationPushUtils.getViolationPushDTO(provider, notify);
+                        break;
+                    case NotifyType.message:
 
-            assert pushMsgDTO != null;
-            if (provider.equals(ProviderType.qq)) {
-                QQUtil.qqPushMsgCommon(receiveAccount.getQqMpOpenId(), provider, pushMsgDTO, notify);
-            } else if (provider.equals(ProviderType.wx)) {
-                WxUtil.wxPushMsgCommon(receiveAccount.getWxMpOpenId(), provider, pushMsgDTO, notify);
+                }
+                assert pushMsgDTO != null;
+                if (provider.equals(ProviderType.qq)) {
+                    QQUtil.qqPushMsgCommon(receiveAccount.getQqMpOpenId(), provider, pushMsgDTO, notify);
+                } else if (provider.equals(ProviderType.wx)) {
+                    WxUtil.wxPushMsgCommon(receiveAccount.getWxMpOpenId(), provider, pushMsgDTO, notify);
+                }
             }
-
         }
 
 
