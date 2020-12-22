@@ -2,10 +2,8 @@ package com.qingchi.base.model.chat;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.qingchi.base.constant.ChatType;
-import com.qingchi.base.constant.ChatUserStatus;
 import com.qingchi.base.constant.CommonStatus;
 import lombok.Data;
-import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -83,7 +81,7 @@ public class ChatUserDO {
     public ChatUserDO(Long chatId, Integer userId, String chatType) {
         this.chatId = chatId;
         this.userId = userId;
-        this.status = CommonStatus.normal;
+        this.status = CommonStatus.enable;
         if (ChatType.systemChats.contains(chatType)) {
             this.topFlag = true;
         } else {
@@ -112,7 +110,7 @@ public class ChatUserDO {
         this.status = chatDO.getStatus();
         //只有支付开启的时候，直接在对方前台显示
         //待开启的情况，只把自己的改为show
-        if (chatDO.getStatus().equals(CommonStatus.normal)) {
+        if (chatDO.getStatus().equals(CommonStatus.enable)) {
             this.frontShow = true;
         }
         //如果直接开启，则前台需要改为显示状态

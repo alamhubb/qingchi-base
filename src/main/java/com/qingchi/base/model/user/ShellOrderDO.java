@@ -55,7 +55,7 @@ public class ShellOrderDO implements Serializable {
         Date date = new Date();
         this.createTime = date;
         this.updateTime = date;
-        this.status = CommonStatus.normal;
+        this.status = CommonStatus.enable;
         this.type = type;
         this.expenseType = expenseType;
         this.expenseDetailType = expenseType;

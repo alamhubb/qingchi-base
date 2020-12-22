@@ -41,13 +41,13 @@ public class TagRedis {
 
     @Cacheable(cacheNames = "tagById", key = "#tagId")
     public Optional<TagDO> findById(Integer tagId) {
-        return tagRepository.findByIdAndStatus(tagId, CommonStatus.normal);
+        return tagRepository.findByIdAndStatus(tagId, CommonStatus.enable);
     }
 
     //获取talk下的
     @Cacheable(cacheNames = "tagIdsByTalkId", key = "#talkId")
     public List<Integer> getTagIdsByTalkId(Integer talkId) {
-        return tagRepository.findTagIdsByTalkIdAndStatus(talkId, CommonStatus.normal);
+        return tagRepository.findTagIdsByTalkIdAndStatus(talkId, CommonStatus.enable);
     }
 
     /**
@@ -57,13 +57,13 @@ public class TagRedis {
      */
     @Cacheable(cacheNames = "tagsHot")
     public List<TagVO> getHotTags() {
-        List<TagDO> tagDOS = tagRepository.findTop10ByStatusOrderByCountDesc(CommonStatus.normal, PageRequest.of(0, 10));
+        List<TagDO> tagDOS = tagRepository.findTop10ByStatusOrderByCountDesc(CommonStatus.enable, PageRequest.of(0, 10));
         return TagVO.tagDOToVOS(tagDOS);
     }
 
     @Cacheable(cacheNames = "tagsAll")
     public List<TagVO> getAllTags() {
-        List<TagDO> tagDOS = tagRepository.findAllByStatusOrderByCountDesc(CommonStatus.normal);
+        List<TagDO> tagDOS = tagRepository.findAllByStatusOrderByCountDesc(CommonStatus.enable);
         return TagVO.tagDOToVOS(tagDOS);
     }
 
@@ -103,7 +103,7 @@ public class TagRedis {
 
 
     private List<TagTypeDO> getTagTypes() {
-        return tagTypeRepository.findByStatusAndTalkCountGreaterThanOrderByTalkCountDesc(CommonStatus.normal, CommonConst.zero);
+        return tagTypeRepository.findByStatusAndTalkCountGreaterThanOrderByTalkCountDesc(CommonStatus.enable, CommonConst.zero);
     }
 
     private List<TagTypeVO> tagTypesSetTags(List<TagTypeDO> DOs) {
@@ -117,7 +117,7 @@ public class TagRedis {
 
     //根据typeid获取所有
     private List<TagVO> getTagsByTagTypeId(Integer tagTypeId) {
-        List<TagDO> list = tagRepository.findByTagTypeIdAndStatusOrderByCountDesc(tagTypeId, CommonStatus.normal);
+        List<TagDO> list = tagRepository.findByTagTypeIdAndStatusOrderByCountDesc(tagTypeId, CommonStatus.enable);
         // 从数据库中获取tag列表
         return TagVO.tagDOToVOS(list);
     }

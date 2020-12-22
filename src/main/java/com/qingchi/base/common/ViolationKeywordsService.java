@@ -40,7 +40,7 @@ public class ViolationKeywordsService {
     private KeywordsRepository keywordsRepository;
 
     public void refreshKeywords() {
-        List<IllegalWordDO> illegalWordDOS = illegalWordRepository.findAllByStatus(CommonStatus.normal);
+        List<IllegalWordDO> illegalWordDOS = illegalWordRepository.findAllByStatus(CommonStatus.enable);
         List<String> illegals = illegalWordDOS.stream().map(IllegalWordDO::getWord).collect(Collectors.toList());
         AppConfigConst.setIllegals(illegals);
 

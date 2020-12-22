@@ -66,7 +66,7 @@ public class ViolationService {
         String userStatus = violationUser.getStatus();
         //存在用户发表其他内容，被封的情况
         if (CommonStatus.auditStatus.contains(userStatus)) {
-            violationUser.setStatus(CommonStatus.normal);
+            violationUser.setStatus(CommonStatus.enable);
         } else {
             QingLogger.logger.info("用户状态已经被更改：{}", userStatus);
         }
@@ -179,7 +179,7 @@ public class ViolationService {
                 calendar.add(Calendar.DATE, violationDay);
                 violationUser.setViolationEndTime(calendar.getTime());
             } else {
-                violationUser.setStatus(CommonStatus.normal);
+                violationUser.setStatus(CommonStatus.enable);
             }
         }
         //不删除之前的内容

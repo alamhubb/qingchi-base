@@ -158,7 +158,7 @@ public class UserService {
         user.setShell(0);
         //财富等级
         user.setWealthLevel(0);
-        user.setStatus(CommonStatus.normal);
+        user.setStatus(CommonStatus.enable);
         user.setViolationCount(0);
         user.setFansNum(0);
         user.setFollowNum(0);
@@ -188,7 +188,7 @@ public class UserService {
         user.setInviteCode(userInviteCode.substring(userInviteCode.length() - 8));
         user = userRepository.save(user);
         //注释掉圈子功能
-        Optional<ChatDO> optionalChatDO = chatRepository.findFirstOneByTypeAndStatusOrderByCreateTime(ChatType.system_group, CommonStatus.normal);
+        Optional<ChatDO> optionalChatDO = chatRepository.findFirstOneByTypeAndStatusOrderByCreateTime(ChatType.system_group, CommonStatus.enable);
         if (optionalChatDO.isPresent()) {
             ChatDO chat = optionalChatDO.get();
             ChatUserDO chatUserDO = new ChatUserDO(chat.getId(), user.getId(), ChatType.system_group);

@@ -31,10 +31,10 @@ public class FollowService {
         if (followDOOptional.isPresent()) {
             followDO = followDOOptional.get();
             //已经关注
-            if (CommonStatus.normal.equals(followDO.getStatus())) {
+            if (CommonStatus.enable.equals(followDO.getStatus())) {
                 return new ResultVO<>("已经关注过此用户了");
             } else {
-                followDO.setStatus(CommonStatus.normal);
+                followDO.setStatus(CommonStatus.enable);
                 user.setFollowNum(user.getFollowNum() + 1);
                 beUser.setFansNum(beUser.getFansNum() + 1);
             }

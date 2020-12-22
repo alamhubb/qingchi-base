@@ -37,7 +37,7 @@ public class UserContactDO implements Serializable {
         Date curDate = new Date();
         this.createTime = curDate;
         this.updateTime = curDate;
-        this.status = CommonStatus.normal;
+        this.status = CommonStatus.enable;
     }
 
     public UserContactDO(Integer userId, Integer beUserId, String type) {

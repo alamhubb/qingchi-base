@@ -1,7 +1,6 @@
 package com.qingchi.base.model.chat;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.qingchi.base.constant.ChatStatus;
 import com.qingchi.base.constant.ChatTopType;
 import com.qingchi.base.constant.ChatType;
 import com.qingchi.base.constant.CommonStatus;
@@ -70,7 +69,7 @@ public class ChatDO implements Serializable {
         this.type = type;
         //如果为匹配
         if (ChatType.match.equals(type)) {
-            this.status = CommonStatus.normal;
+            this.status = CommonStatus.enable;
             this.matchStatus = CommonStatus.waitMatch;
         } else if (ChatType.single.equals(type)) {
             //如果为私聊，则默认为待开启状态，需要有一方发送消息后，才改为开启状态

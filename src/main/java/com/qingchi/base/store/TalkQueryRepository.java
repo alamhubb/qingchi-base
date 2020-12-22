@@ -37,7 +37,7 @@ public class TalkQueryRepository {
 
     public List<TalkDO> queryTalksTop10ByUserFollow(List<Integer> talkIds, Integer userId) {
         List<Integer> ids = talkRepository.queryTalkIdsTop10ByUserFollow(
-                talkIds, userId, CommonStatus.preAudit, CommonStatus.otherCanSeeContentStatus, CommonStatus.normal, PageRequest.of(0, 10));
+                talkIds, userId, CommonStatus.preAudit, CommonStatus.otherCanSeeContentStatus, CommonStatus.enable, PageRequest.of(0, 10));
         return this.queryTalksByIds(ids);
     }
 

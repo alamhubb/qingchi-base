@@ -33,7 +33,7 @@ public class FollowAddVO {
         beUser.setFansNum(beUser.getFansNum() + 1);
         followDO.setUserId(user.getId());
         followDO.setBeUserId(beUser.getId());
-        followDO.setStatus(CommonStatus.normal);
+        followDO.setStatus(CommonStatus.enable);
         return followDO;
     }
 

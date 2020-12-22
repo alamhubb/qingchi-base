@@ -17,7 +17,7 @@ public class CommonStatus {
     public static final String init = "初始";//初始
     public static final String preAudit = "预审核";//待审核
     public static final String audit = "审核中";//待审核
-    public static final String normal = "正常";//启用
+    public static final String enable = "正常";//启用
     public static final String delete = "已删除";//删除
     public static final String authFail = "认证失败";//删除
     public static final String violation = "违规";//违规
@@ -28,6 +28,9 @@ public class CommonStatus {
     public static final String noViolation = "不违规";//不违规
     public static final String lose = "失效";//失效
     public static final String destroy = "注销";//失效
+
+    //message特有
+    public static final String withdraw  = "已撤回";//失效
 
     //chat特有
 
@@ -47,16 +50,16 @@ public class CommonStatus {
     //阅读状态
     public static final String unread = "未读";//已读
     //他人可见
-    public static final List<String> otherCanSeeContentStatus = Arrays.asList(normal, noViolation);
+    public static final List<String> otherCanSeeContentStatus = Arrays.asList(enable, noViolation);
 
     //自己可见，自己能比别人多看见预审核状态的信息
-    public static final List<String> selfCanSeeContentStatus = Arrays.asList(normal, noViolation, preAudit);
+    public static final List<String> selfCanSeeContentStatus = Arrays.asList(enable, noViolation, preAudit);
 
     //只要是举报为审核中的所有都能查出来
-    public static final List<String> contentAuditStatus = Arrays.asList(normal, noViolation, preAudit, audit, delete);
+    public static final List<String> contentAuditStatus = Arrays.asList(enable, noViolation, preAudit, audit, delete);
 
     public static final List<String> auditStatus = Arrays.asList(preAudit, audit);
     //可以发布内容的状态
-    public static final List<String> canPublishContentStatus = Arrays.asList(preAudit, normal);
+    public static final List<String> canPublishContentStatus = Arrays.asList(preAudit, enable);
 }
 

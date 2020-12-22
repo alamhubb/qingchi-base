@@ -25,7 +25,9 @@ public class MessageReceiveDO {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //置顶标识
+    //msg上存储了是否已撤回状态，以及发送的消息的状态，撤回和已删除冲突，有可能已删除，但是已撤回，一个字段记录不了两个状态
+    private String msgStatus;
+    //置顶标识，用类记录接收的状态
     private String status;
     private Boolean isRead;
     /*
@@ -57,7 +59,7 @@ public class MessageReceiveDO {
         this.userId = userId;
         this.receiveUserId = receiveUserId;
         this.messageId = messageId;
-        this.status = CommonStatus.normal;
+        this.status = CommonStatus.enable;
         //接受消息的人看的
         this.isRead = false;
         this.isMine = false;

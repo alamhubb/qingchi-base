@@ -22,7 +22,7 @@ public class ConfigMapRefreshService {
     private AppConfigRepository appConfigRepository;
 
     public void refreshConfigMap() {
-        List<AppConfigDO> appConfigDOS = appConfigRepository.findAllByStatusOrderByCreateTimeDesc(CommonStatus.normal);
+        List<AppConfigDO> appConfigDOS = appConfigRepository.findAllByStatusOrderByCreateTimeDesc(CommonStatus.enable);
         for (AppConfigDO appConfigDO : appConfigDOS) {
             if (ConfigValueType.stringType.equals(appConfigDO.getValueType())) {
                 AppConfigConst.appConfigMap.put(appConfigDO.getConfigKey(), appConfigDO.getStringValue());

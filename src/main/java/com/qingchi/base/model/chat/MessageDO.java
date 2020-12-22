@@ -67,7 +67,7 @@ public class MessageDO implements BaseModelDO, Serializable {
         this.content = content;
         this.reportContentType = ReportContentType.message;
         //自己的chatUser，记录自己的未读消息数量，和是否置顶了，生成chatVo时使用
-        this.status = CommonStatus.normal;
+        this.status = CommonStatus.enable;
         this.readStatus = CommonStatus.sending;
         this.readNum = 0;
         this.type = MessageType.simple;
