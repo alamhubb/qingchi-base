@@ -1,4 +1,6 @@
-package com.qingchi.base.constant;
+package com.qingchi.base.constant.status;
+
+import com.qingchi.base.constant.CommonStatus;
 
 import java.util.Arrays;
 import java.util.List;
@@ -6,7 +8,11 @@ import java.util.List;
 /**
  * 会话聊天的状态，暂不使用，全局使用一样的，全局统一，避免出现文字不一致问题
  */
-public class ChatStatus {
+public class ChatStatus extends BaseStatus {
+    public static final String waitOpen = CommonStatus.waitOpen;
+
+    public static final List<String> allStatus = Arrays.asList(ChatStatus.enable, ChatStatus.waitOpen);
+
    /* //启用
     public static final String normal = "正常";
     //删除
