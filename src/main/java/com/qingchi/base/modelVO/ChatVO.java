@@ -154,8 +154,7 @@ public class ChatVO {
 
     public ChatVO(MessageReceiveDO messageReceiveDO, ChatUserDO chatUser, ChatDO chat) {
         this(chat, chatUser);
-        Optional<MessageDO> optionalMessageDO = messageRepository.findById(messageReceiveDO.getMessageId());
-        this.messages = Collections.singletonList(new MessageVO(messageReceiveDO, optionalMessageDO.get()));
+        this.messages = Collections.singletonList(new MessageVO(messageReceiveDO));
         //todo 不能推送所有未读的，因为有些未读的可能已经推送过了，但用户没看而已，再推送就会重复，解决这个问题需要标识哪些是已经推送过了，websocket中记录，目前前台通过重连充重新查询chats解决
 //        List<MessageReceiveDO> messageReceiveDOS = messageReceiveRepository.findByChatUserAndMessageStatusAndReceiveUserAndStatusAndIsReadFalseOrderByCreateTimeDescIdDesc(messageReceiveDO.getChatUser(), CommonStatus.enable, messageReceiveDO.getReceiveUser(), CommonStatus.enable);
 //        this.messages = MessageVO.messageDOToVOS(messageReceiveDOS);

@@ -78,14 +78,14 @@ public class MessageVO {
         this.isMine = this.user.getId().equals(userId);
     }
 
-    public MessageVO(MessageReceiveDO messageReceive, MessageDO messageDO) {
-        this(messageDO);
+    public MessageVO(MessageReceiveDO messageReceive) {
+        this(messageReceive.getMessage());
         //涉及到举报，不知道是msgid还是msguserid，所以暂时取消，统一使用msgid，删除和举报
 //        this.id = messageReceive.getId();
         this.isMine = messageReceive.getIsMine();
         if (this.isMine) {
             //自己发的消息就去msg上的发送状态
-            this.readStatus = messageDO.getReadStatus();
+            this.readStatus = messageReceive.getMessage().getReadStatus();
         } else {
             //否则就取自己的阅读状态
             this.isRead = messageReceive.getIsRead();
@@ -96,10 +96,7 @@ public class MessageVO {
 
     public static List<MessageVO> messageReceiveDOToVOS(List<MessageReceiveDO> messageDOS) {
         //翻转数组,因为查出来的是倒序的
-        List<MessageVO> messageVOS = messageDOS.stream().map(messageReceiveDO -> {
-            Optional<MessageDO> optionalMessageDO = messageRepository.findById(messageReceiveDO.getMessageId());
-            return new MessageVO(messageReceiveDO, optionalMessageDO.get());
-        }).collect(Collectors.toList());
+        List<MessageVO> messageVOS = messageDOS.stream().map(MessageVO::new).collect(Collectors.toList());
         Collections.reverse(messageVOS);
         return messageVOS;
     }

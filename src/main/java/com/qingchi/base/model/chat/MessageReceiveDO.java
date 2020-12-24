@@ -16,7 +16,7 @@ import java.util.Date;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity
 @Table(name = "message_receive", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"receiveUserId", "messageId"})
+        @UniqueConstraint(columnNames = {"receiveUserId", "message"})
 })
 @ToString(exclude = "message")
 //发送出去的消息表，接收人是谁，基于哪个chatUser
@@ -36,7 +36,8 @@ public class MessageReceiveDO {
     //是否自己的
     private Boolean isMine;
 
-    private Long messageId;
+    @ManyToOne
+    private MessageDO message;
 
     //
     private Integer receiveUserId;
@@ -53,12 +54,12 @@ public class MessageReceiveDO {
     public MessageReceiveDO() {
     }
 
-    public MessageReceiveDO(Long chatUserId, Integer userId, Integer receiveUserId, Long messageId) {
+    public MessageReceiveDO(Long chatUserId, Integer userId, Integer receiveUserId, MessageDO message) {
         Date curDate = new Date();
         this.chatUserId = chatUserId;
         this.userId = userId;
         this.receiveUserId = receiveUserId;
-        this.messageId = messageId;
+        this.message = message;
         this.status = CommonStatus.enable;
         //接受消息的人看的
         this.isRead = false;
