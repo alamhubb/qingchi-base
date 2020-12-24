@@ -16,7 +16,7 @@ import java.util.Date;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity
 @Table(name = "message_receive", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"receiveUserId", "message"})
+        @UniqueConstraint(columnNames = {"receiveUserId", "message_id"})
 })
 @ToString(exclude = "message")
 //发送出去的消息表，接收人是谁，基于哪个chatUser

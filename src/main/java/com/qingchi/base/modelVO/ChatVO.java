@@ -3,6 +3,7 @@ package com.qingchi.base.modelVO;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.qingchi.base.constant.ChatType;
 import com.qingchi.base.constant.CommonStatus;
+import com.qingchi.base.constant.status.ChatStatus;
 import com.qingchi.base.model.chat.ChatDO;
 import com.qingchi.base.model.chat.ChatUserDO;
 import com.qingchi.base.model.chat.MessageDO;
@@ -87,7 +88,7 @@ public class ChatVO {
         this.lastContent = chatDO.getLastContent();
         this.unreadNum = 0;
         this.messages = new ArrayList<>();
-        this.needPayOpen = false;
+        this.needPayOpen = true;
     }
 
     //初始查询的时候为99
@@ -133,8 +134,8 @@ public class ChatVO {
         this.updateTime = chatUserDO.getUpdateTime();
         this.lastContent = chatUserDO.getLastContent();
         this.status = chatUserDO.getStatus();
-        if (this.status.equals(CommonStatus.waitOpen)) {
-            this.needPayOpen = true;
+        if (!this.status.equals(ChatStatus.waitOpen)) {
+            this.needPayOpen = false;
         }
     }
 
