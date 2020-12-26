@@ -1,6 +1,7 @@
 package com.qingchi.base.config.redis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.qingchi.base.config.newWebsocket.NewWebSocketServer;
 import com.qingchi.base.modelVO.NotifyVO;
 import com.qingchi.base.config.websocket.WebsocketServer;
 import org.springframework.context.annotation.Bean;
@@ -28,7 +29,8 @@ public class RedisSubListenerConfig {
             //解析message获取中的用户信息，和消息信息
             try {
                 NotifyVO notifyVO = objectMapper.readValue(message.toString(), NotifyVO.class);
-                WebsocketServer.sendMessage(notifyVO.getReceiveUserId().toString(), notifyVO);
+//                WebsocketServer.sendMessage(notifyVO.getReceiveUserId().toString(), notifyVO);
+                NewWebSocketServer.sendInfo(message.toString(), notifyVO.getReceiveUserId().toString());
             } catch (IOException e) {
                 e.printStackTrace();
             }
