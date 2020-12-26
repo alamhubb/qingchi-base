@@ -20,5 +20,6 @@ public interface MessageReceiveRepository extends JpaRepository<MessageReceiveDO
 
 
     //查询消息列表，根据chatUserId、msgReceiveStatus、msgIds 按照msgReceiveStatus 倒序排序
-    List<MessageReceiveDO> findTop30ByChatUserIdAndStatusAndMessageIdNotInOrderByIdDesc(Long chatId, String msgReceiveStatus, List<Long> ids);
+    List<MessageReceiveDO> findTop31ByChatUserIdAndStatusAndMessageIdNotInOrderByIdDesc(Long chatUserId, String msgReceiveStatus, List<Long> ids);
+    List<MessageReceiveDO> findTop30ByChatUserIdAndStatusAndMessageIdNotInOrderByIdDesc(Long chatUserId, String msgReceiveStatus, List<Long> ids);
 }

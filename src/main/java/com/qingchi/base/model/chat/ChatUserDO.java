@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.qingchi.base.constant.ChatType;
 import com.qingchi.base.constant.CommonStatus;
 import lombok.Data;
+import org.apache.ibatis.annotations.Many;
+import org.hibernate.mapping.ToOne;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -17,7 +19,7 @@ import java.util.Date;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity
 @Table(name = "chatUser", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"userId", "chatId"}),
+        @UniqueConstraint(columnNames = {"userId", "chat_id"}),
         @UniqueConstraint(columnNames = {"userId", "receiveUserId"})
 })
 public class ChatUserDO {
@@ -28,7 +30,8 @@ public class ChatUserDO {
     //置顶标识
     private Boolean topFlag;
 
-    private Long chatId;
+    @ManyToOne
+    private ChatDO chat;
 
     private Integer userId;
 
@@ -57,7 +60,8 @@ public class ChatUserDO {
 
     //这样的话，发消息的时候就不需要再去查询是否是好友和关注了
     //只需要判断这一个，每次更改，对方未关注你，且还不是你的好友
-    private Boolean allowSendMsg;
+    //这个状态需要实时查询，所以不需要存储
+//    private Boolean allowSendMsg;
 
     //剩余允许发送数量，只有没被关注，且购买了，才需要这个
     private Integer msgRemainNum;
@@ -78,8 +82,8 @@ public class ChatUserDO {
 
     //群聊不需要对方用户
     //这个方法暂时没生效，群的时候没有使用chatUser表的数据
-    public ChatUserDO(Long chatId, Integer userId, String chatType) {
-        this.chatId = chatId;
+    public ChatUserDO(ChatDO chat, Integer userId, String chatType) {
+        this.chat = chat;
         this.userId = userId;
         this.status = CommonStatus.enable;
         if (ChatType.systemChats.contains(chatType)) {
@@ -97,8 +101,8 @@ public class ChatUserDO {
     }
 
     //私聊，对方用户，方便获取对方的头像昵称，展示, 匹配模块有使用
-    public ChatUserDO(Long chatId, Integer userId, Integer receiveUserId, String chatType) {
-        this(chatId, userId, chatType);
+    public ChatUserDO(ChatDO chat, Integer userId, Integer receiveUserId, String chatType) {
+        this(chat, userId, chatType);
         //这里需要看一下，匹配情况，是否要改为1
         this.unreadNum = 0;
         this.receiveUserId = receiveUserId;
@@ -106,7 +110,7 @@ public class ChatUserDO {
 
     //创建私聊时，需要根据chat状态决定chatUser状态，有两种情况，直接开启和待开启，msg可删除时，则无需再使用lastcontent
     public ChatUserDO(ChatDO chatDO, Integer userId, Integer receiveUserId) {
-        this(chatDO.getId(), userId, receiveUserId, chatDO.getType());
+        this(chatDO, userId, receiveUserId, chatDO.getType());
         this.status = chatDO.getStatus();
         //只有支付开启的时候，直接在对方前台显示
         //待开启的情况，只把自己的改为show

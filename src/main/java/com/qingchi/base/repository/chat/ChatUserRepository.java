@@ -27,4 +27,9 @@ public interface ChatUserRepository extends JpaRepository<ChatUserDO, Long> {
 
 
     List<ChatUserDO> findByChatIdAndStatus(Long chatId, String status);
+
+    //根据chatuserId，chatUserStatus，topFlag，update，frontShow
+
+    //先不使用chat状态
+    List<ChatUserDO> findByUserIdAndStatusAndFrontShowTrueOrderByTopFlagDescUpdateTimeDesc(Integer userId, String status);
 }

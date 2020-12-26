@@ -41,7 +41,8 @@ public class MessageVO {
     private Boolean isRead;
     private Integer readNum;
     private Date createTime;
-    private Date updateTIme;
+    //前台不需要这个时间
+//    private Date updateTIme;
     private String type;
 
     public MessageVO() {

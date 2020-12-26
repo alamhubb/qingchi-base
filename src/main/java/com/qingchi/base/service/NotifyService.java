@@ -85,10 +85,10 @@ public class NotifyService {
                 MessageReceiveDO messageReceiveDO = messageReceiveDOOptional.get();
                 Optional<ChatUserDO> chatUserDOOptional = chatUserRepository.findById(messageReceiveDO.getChatUserId());
                 ChatUserDO chatUserDO = chatUserDOOptional.get();
-                Optional<ChatDO> chatDOOptional = chatRepository.findById(chatUserDO.getChatId());
+//                Optional<ChatDO> chatDOOptional = chatRepository.findById();
                 //如果群聊，直接发送给两个服务器在线的所有用户，并且查找他们未读的。
                 //未登录的时候也查询群聊里面的所有内容
-                NotifyVO notifyVO = new NotifyVO(notify, requestUser, messageReceiveDO, chatUserDO, chatDOOptional.get());
+                NotifyVO notifyVO = new NotifyVO(notify, requestUser, messageReceiveDO, chatUserDO, chatUserDO.getChat());
                 try {
                     stringRedisTemplate.convertAndSend(receiveUserId, JsonUtils.objectMapper.writeValueAsString(notifyVO));
                 } catch (JsonProcessingException e) {

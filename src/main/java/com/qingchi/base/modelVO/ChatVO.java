@@ -2,8 +2,11 @@ package com.qingchi.base.modelVO;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.qingchi.base.constant.ChatType;
+import com.qingchi.base.constant.CommonConst;
 import com.qingchi.base.constant.CommonStatus;
+import com.qingchi.base.constant.LoadMoreType;
 import com.qingchi.base.constant.status.ChatStatus;
+import com.qingchi.base.constant.status.MessageStatus;
 import com.qingchi.base.model.chat.ChatDO;
 import com.qingchi.base.model.chat.ChatUserDO;
 import com.qingchi.base.model.chat.MessageDO;
@@ -63,6 +66,7 @@ public class ChatVO {
     private Boolean topFlag;
     private String lastContent;
     private Boolean vipFlag;
+    private String loadMore;
 
     //只有当对方未关注你，且还不是你的好友，才需要使用这个字段判断。
     //需要支付开启会话
@@ -134,6 +138,7 @@ public class ChatVO {
         this.updateTime = chatUserDO.getUpdateTime();
         this.lastContent = chatUserDO.getLastContent();
         this.status = chatUserDO.getStatus();
+        this.loadMore = LoadMoreType.more;
         if (!this.status.equals(ChatStatus.waitOpen)) {
             this.needPayOpen = false;
         }
@@ -142,8 +147,13 @@ public class ChatVO {
     public ChatVO(ChatDO chatDO, ChatUserDO chatUserDO, boolean queryMsgFlag) {
         this(chatDO, chatUserDO);
         //查询用户这个chatUser下的消息
-//        List<MessageReceiveDO> messageReceiveDOS = messageReceiveRepository.findTop30ByChatUserIdAndMessageStatusInAndStatusOrderByCreateTimeDescIdDesc(chatUserDO.getId(), CommonStatus.otherCanSeeContentStatus, CommonStatus.normal);
-        List<MessageReceiveDO> messageReceiveDOS = new ArrayList<>();
+        List<MessageReceiveDO> messageReceiveDOS = messageReceiveRepository.findTop31ByChatUserIdAndStatusAndMessageIdNotInOrderByIdDesc(chatUserDO.getId(), MessageStatus.enable, CommonConst.emptyLongIds);
+        if (messageReceiveDOS.size() < 31) {
+            this.loadMore = LoadMoreType.noMore;
+        } else {
+            messageReceiveDOS.subList(1, 31);
+        }
+        //        List<MessageReceiveDO> messageReceiveDOS = new ArrayList<>();
         this.messages = MessageVO.messageReceiveDOToVOS(messageReceiveDOS);
     }
 
@@ -163,10 +173,7 @@ public class ChatVO {
 
     public static List<ChatVO> chatUserDOToVOS(List<ChatUserDO> chatUsers) {
         //查询的时候chat列表展示不为当前用户的
-        return chatUsers.stream().map((ChatUserDO chatUserDO) -> {
-            Optional<ChatDO> chatDOOptional = chatRepository.findById(chatUserDO.getChatId());
-            return new ChatVO(chatDOOptional.get(), chatUserDO, true);
-        }).collect(Collectors.toList());
+        return chatUsers.stream().map((ChatUserDO chatUserDO) -> new ChatVO(chatUserDO.getChat(), chatUserDO, true)).collect(Collectors.toList());
     }
 
     public static List<ChatVO> chatDOToVOS(List<ChatDO> chats) {

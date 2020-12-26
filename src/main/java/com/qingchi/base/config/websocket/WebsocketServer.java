@@ -70,7 +70,7 @@ public class WebsocketServer extends TextWebSocketHandler {
         }
     }
 
-    public static void sendMessage(String userId, NotifyVO notify){
+    public static void sendMessage(String userId, NotifyVO notify) {
         WebSocketSession session = onlineUsersSessionMap.get(userId);
         //如果用户在线才发送
         if (session != null && session.isOpen()) {
@@ -103,7 +103,7 @@ public class WebsocketServer extends TextWebSocketHandler {
             if (IntegerUtils.strIsAllNumber(userId)) {
                 userService.setUserOnlineTrue(userId);
             }
-            logger.info("用户标识：{}，Session：{}", userId, session.toString());
+            logger.info("用户标识：{}，Session：{}，在线数量：{}", userId, session.toString(), onlineUsersChannelTopicMap.size());
         }
     }
 
