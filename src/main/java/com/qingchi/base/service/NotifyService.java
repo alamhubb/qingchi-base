@@ -61,17 +61,17 @@ public class NotifyService {
     //发送通知
     public void sendNotify(NotifyDO notify, UserDO requestUser) throws ResultException {
         //评论动态
-        UserDO receiveUser = userRepository.findById(notify.getReceiveUserId()).get();
+//        UserDO receiveUser = userRepository.findById(receiveUserId).get();
+        Integer receiveUserId = notify.getReceiveUserId();
 
-        String receiveUserId = receiveUser.getId().toString();
-        Optional<AccountDO> accountDOOptional = accountRepository.findOneByUserId(receiveUser.getId());
+        Optional<AccountDO> accountDOOptional = accountRepository.findOneByUserId(receiveUserId);
         if (accountDOOptional.isPresent()) {
             String notifyType = notify.getType();
             AccountDO receiveAccount = accountDOOptional.get();
             String provider = receiveAccount.getProvider();
             if (NotifyType.comments.contains(notifyType)) {
                 //显示在动态主页右上角的通知，只需要发送者的名称头像图片
-                WebsocketServer.sendMessage(receiveUserId, new NotifyVO(requestUser));
+                WebsocketServer.sendMessage(receiveUserId.toString(), new NotifyVO(requestUser));
             }
             PushMsgDTO pushMsgDTO = null;
 
@@ -90,7 +90,7 @@ public class NotifyService {
                 //未登录的时候也查询群聊里面的所有内容
                 NotifyVO notifyVO = new NotifyVO(notify, requestUser, messageReceiveDO, chatUserDO, chatUserDO.getChat());
                 try {
-                    stringRedisTemplate.convertAndSend(receiveUserId, JsonUtils.objectMapper.writeValueAsString(notifyVO));
+                    stringRedisTemplate.convertAndSend(receiveUserId.toString(), JsonUtils.objectMapper.writeValueAsString(notifyVO));
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
