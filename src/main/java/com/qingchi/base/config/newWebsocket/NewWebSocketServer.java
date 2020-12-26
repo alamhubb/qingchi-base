@@ -11,8 +11,8 @@ import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 
-@ServerEndpoint("/imserver/{token}")
-@Component
+//@ServerEndpoint("/imserver/{token}")
+//@Component
 public class NewWebSocketServer {
     public static final Logger log = LoggerFactory.getLogger(NewWebSocketServer.class);
     /**
