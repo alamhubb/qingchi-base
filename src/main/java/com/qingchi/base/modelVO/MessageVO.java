@@ -40,7 +40,7 @@ public class MessageVO {
     private String readStatus;
     private Boolean isRead;
     private Integer readNum;
-    private Date createTime;
+    private Long createTime;
     //前台不需要这个时间
 //    private Date updateTIme;
     private String type;
@@ -51,7 +51,7 @@ public class MessageVO {
     public MessageVO(MessageDO messageDO) {
         this.id = messageDO.getId();
         this.content = messageDO.getContent();
-        this.createTime = messageDO.getCreateTime();
+        this.createTime = messageDO.getCreateTime().getTime();
 
 
         //消息的用户

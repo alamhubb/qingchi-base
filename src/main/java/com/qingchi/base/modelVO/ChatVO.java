@@ -58,7 +58,7 @@ public class ChatVO {
     private String avatar;
     private String type;
     private String status;
-    private Date updateTime;
+    private Long updateTime;
     private List<MessageVO> messages;
     private Integer unreadNum;
     private Integer topType;
@@ -86,7 +86,7 @@ public class ChatVO {
         }
         this.topFlag = chatDO.getTopFlag();
         //chat的最后一条消息时间大家都一样，把最后一条删除也是最后一条的时间
-        this.updateTime = chatDO.getUpdateTime();
+        this.updateTime = chatDO.getUpdateTime().getTime();
         this.topType = chatDO.getTopLevel();
         this.topLevel = chatDO.getTopLevel();
         this.lastContent = chatDO.getLastContent();
@@ -135,7 +135,7 @@ public class ChatVO {
         //chat的最后一条消息时间大家都一样，把最后一条删除也是最后一条的时间
         this.topFlag = chatUserDO.getTopFlag();
         this.unreadNum = chatUserDO.getUnreadNum();
-        this.updateTime = chatUserDO.getUpdateTime();
+        this.updateTime = chatUserDO.getUpdateTime().getTime();
         this.lastContent = chatUserDO.getLastContent();
         this.status = chatUserDO.getStatus();
         this.loadMore = LoadMoreType.more;
