@@ -191,7 +191,7 @@ public class UserService {
         Optional<ChatDO> optionalChatDO = chatRepository.findFirstOneByTypeAndStatusOrderByCreateTime(ChatType.system_group, CommonStatus.enable);
         if (optionalChatDO.isPresent()) {
             ChatDO chat = optionalChatDO.get();
-            ChatUserDO chatUserDO = new ChatUserDO(chat, user.getId(), ChatType.system_group);
+            ChatUserDO chatUserDO = new ChatUserDO(chat, user.getId());
             chatUserRepository.save(chatUserDO);
         }
 

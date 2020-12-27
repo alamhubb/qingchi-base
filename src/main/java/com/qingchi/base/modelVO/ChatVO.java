@@ -6,6 +6,7 @@ import com.qingchi.base.constant.CommonConst;
 import com.qingchi.base.constant.CommonStatus;
 import com.qingchi.base.constant.LoadMoreType;
 import com.qingchi.base.constant.status.ChatStatus;
+import com.qingchi.base.constant.status.ChatUserStatus;
 import com.qingchi.base.constant.status.MessageStatus;
 import com.qingchi.base.model.chat.ChatDO;
 import com.qingchi.base.model.chat.ChatUserDO;
@@ -30,6 +31,7 @@ import java.util.stream.Collectors;
 @Component
 @Data
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+//chatdo+chatUserdo
 public class ChatVO {
     private static MessageReceiveRepository messageReceiveRepository;
 
@@ -57,6 +59,7 @@ public class ChatVO {
     private Integer receiveUserId;
     private String avatar;
     private String type;
+    //为chatUser的status
     private String status;
     private Long updateTime;
     private List<MessageVO> messages;
@@ -64,7 +67,6 @@ public class ChatVO {
     private Integer topType;
     private Integer topLevel;
     private Boolean topFlag;
-    private String lastContent;
     private Boolean vipFlag;
     private String loadMore;
 
@@ -84,18 +86,19 @@ public class ChatVO {
             this.nickname = chatDO.getNickname();
             this.avatar = chatDO.getAvatar();
         }
-        this.topFlag = chatDO.getTopFlag();
+        //如果没有chatUser为不置顶， 未登录时不置顶
+        this.topFlag = false;
         //chat的最后一条消息时间大家都一样，把最后一条删除也是最后一条的时间
         this.updateTime = chatDO.getUpdateTime().getTime();
         this.topType = chatDO.getTopLevel();
         this.topLevel = chatDO.getTopLevel();
-        this.lastContent = chatDO.getLastContent();
         this.unreadNum = 0;
         this.messages = new ArrayList<>();
         this.needPayOpen = true;
     }
 
     //初始查询的时候为99
+    //用户未登录的情况
     public ChatVO(ChatDO chatDO, boolean queryMsgFlag) {
         this(chatDO);
         //查询用户这个chatUser下的消息
@@ -136,10 +139,10 @@ public class ChatVO {
         this.topFlag = chatUserDO.getTopFlag();
         this.unreadNum = chatUserDO.getUnreadNum();
         this.updateTime = chatUserDO.getUpdateTime().getTime();
-        this.lastContent = chatUserDO.getLastContent();
         this.status = chatUserDO.getStatus();
-        this.loadMore = LoadMoreType.more;
-        if (!this.status.equals(ChatStatus.waitOpen)) {
+        this.loadMore = LoadMoreType.noMore;
+        //如果不为待开启，则不为需要支付开启
+        if (!this.status.equals(ChatUserStatus.waitOpen)) {
             this.needPayOpen = false;
         }
     }
@@ -148,10 +151,9 @@ public class ChatVO {
         this(chatDO, chatUserDO);
         //查询用户这个chatUser下的消息
         List<MessageReceiveDO> messageReceiveDOS = messageReceiveRepository.findTop31ByChatUserIdAndStatusAndMessageIdNotInOrderByIdDesc(chatUserDO.getId(), MessageStatus.enable, CommonConst.emptyLongIds);
-        if (messageReceiveDOS.size() < 31) {
-            this.loadMore = LoadMoreType.noMore;
-        } else {
+        if (messageReceiveDOS.size() > 30) {
             messageReceiveDOS.subList(1, 31);
+            this.loadMore = LoadMoreType.more;
         }
         //        List<MessageReceiveDO> messageReceiveDOS = new ArrayList<>();
         this.messages = MessageVO.messageReceiveDOToVOS(messageReceiveDOS);
@@ -176,6 +178,7 @@ public class ChatVO {
         return chatUsers.stream().map((ChatUserDO chatUserDO) -> new ChatVO(chatUserDO.getChat(), chatUserDO, true)).collect(Collectors.toList());
     }
 
+    //用户未登陆时
     public static List<ChatVO> chatDOToVOS(List<ChatDO> chats) {
         //查询的时候chat列表展示不为当前用户的
         return chats.stream().map((ChatDO chatDO) -> new ChatVO(chatDO, true)).collect(Collectors.toList());

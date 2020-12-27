@@ -3,6 +3,7 @@ package com.qingchi.base.model.chat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.qingchi.base.constant.ChatType;
 import com.qingchi.base.constant.CommonStatus;
+import com.qingchi.base.constant.status.ChatUserStatus;
 import lombok.Data;
 import org.apache.ibatis.annotations.Many;
 import org.hibernate.mapping.ToOne;
@@ -28,6 +29,7 @@ public class ChatUserDO {
     private Long id;
 
     //置顶标识
+    //用户手动操作的，系统没有操作方法，暂时没用
     private Boolean topFlag;
 
     @ManyToOne
@@ -46,13 +48,21 @@ public class ChatUserDO {
 
     //每一个用户对于这个群聊的状态
     //需要有一个地方记录，状态有哪些
+//    只有enable时可以发送消息，其他状态必须先转为开启才能发送消息
     private String status;
     private Integer unreadNum;
-    private String lastContent;
+    //仅前台展示字段,前台自己判断生成
+//    private String lastContent;
     //是否为陌生人
     private Boolean stranger;
     //是否在前台显示
+//    前台删除，前台删除时改变，
+//    1。进入时，从用户详情页进入时，如果为关闭，则打开
+//    2。接受消息时，如果为关闭，则打开
+// 作废因为有1 。  发送消息时，如果为关闭，则打开
+// 作废因为有1 。2.   则不需要开启会话时的打开的逻辑。
     private Boolean frontShow;
+
     //开启会话的类型，付费开启，被付费开启，普通发起，普通被发起
     private String openChatType;
     //你是否能向对方发送消息，如果能，则允许，如果不能，则判断剩余条数
@@ -80,52 +90,79 @@ public class ChatUserDO {
     public ChatUserDO() {
     }
 
-    //群聊不需要对方用户
+    //群聊，不需要对方用户
     //这个方法暂时没生效，群的时候没有使用chatUser表的数据
-    public ChatUserDO(ChatDO chat, Integer userId, String chatType) {
+    //私聊群聊创建ChatUserDO的逻辑
+    public ChatUserDO(ChatDO chat, Integer userId) {
         this.chat = chat;
         this.userId = userId;
-        this.status = CommonStatus.enable;
-        if (ChatType.systemChats.contains(chatType)) {
-            this.topFlag = true;
+        String chatType = chat.getType();
+        if (chatType.equals(ChatType.single)) {
+            //私聊聊，直接是开启，创建时 只能为待开启和 不在前台显示
+            this.frontShow = false;
+            this.status = ChatUserStatus.waitOpen;
         } else {
-            this.topFlag = false;
+            //官方群聊，匹配，直接是开启
+            this.status = ChatUserStatus.enable;
+            this.frontShow = true;
         }
+        //如果是系统的，则默认指定
+        this.topFlag = false;
         Date curDate = new Date();
         this.createTime = curDate;
         this.updateTime = curDate;
         //为什么不设置成99，因为此版本没有阅读功能？先试试99
         this.unreadNum = 0;
-        this.lastContent = "";
-        this.frontShow = false;
     }
 
-    //私聊，对方用户，方便获取对方的头像昵称，展示, 匹配模块有使用
-    public ChatUserDO(ChatDO chat, Integer userId, Integer receiveUserId, String chatType) {
-        this(chat, userId, chatType);
+    //私聊，比群聊多一个对方用户id,对方用户，方便获取对方的头像昵称，展示, 匹配模块有使用
+    public ChatUserDO(ChatDO chat, Integer userId, Integer receiveUserId) {
+        this(chat, userId);
         //这里需要看一下，匹配情况，是否要改为1
-        this.unreadNum = 0;
         this.receiveUserId = receiveUserId;
     }
 
+    public void checkFrontShowAndSetTrue() {
+        //进入chat页，列表中进入，肯定是展示的，所以不会走这里
+        //    前台删除，前台删除时改变，
+//    1。进入时，从用户详情页进入时，如果为关闭，则打开
+//    2。接受消息时，如果为关闭，则打开
+// 作废因为有1 。  发送消息时，如果为关闭，则打开
+// 作废因为有1 。2.   则不需要开启会话时的打开的逻辑。
+        if (!this.getFrontShow()) {
+            this.setFrontShow(true);
+        }
+    }
+
+    public void changeStatusClose(Date date) {
+        this.setUpdateTime(date);
+        this.setFrontShow(false);
+        this.setStatus(ChatUserStatus.close);
+    }
+
+    public void changeStatusBeClose(Date date) {
+        this.setUpdateTime(date);
+        this.setStatus(ChatUserStatus.beClose);
+    }
+
     //创建私聊时，需要根据chat状态决定chatUser状态，有两种情况，直接开启和待开启，msg可删除时，则无需再使用lastcontent
-    public ChatUserDO(ChatDO chatDO, Integer userId, Integer receiveUserId) {
+    /*public ChatUserDO(ChatDO chatDO, Integer userId, Integer receiveUserId) {
         this(chatDO, userId, receiveUserId, chatDO.getType());
         this.status = chatDO.getStatus();
         //只有支付开启的时候，直接在对方前台显示
         //待开启的情况，只把自己的改为show
-        if (chatDO.getStatus().equals(CommonStatus.enable)) {
+        *//*if (chatDO.getStatus().equals(CommonStatus.enable)) {
             this.frontShow = true;
-        }
+        }*//*
         //如果直接开启，则前台需要改为显示状态
         //没有msg的时候显示lastcontent,
-        /*
+        *//*
         //前台根据状态判断显示就好
         if (chatDO.getStatus().equals(CommonStatus.waitOpen)) {
             this.lastContent = "会话未开启";
         } else {
             this.lastContent = "会话已开启";
-        }*/
-    }
+        }*//*
+    }*/
 
 }

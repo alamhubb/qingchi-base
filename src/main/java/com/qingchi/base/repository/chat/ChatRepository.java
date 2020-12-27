@@ -15,7 +15,7 @@ import java.util.Optional;
  */
 public interface ChatRepository extends JpaRepository<ChatDO, Long> {
 
-    List<ChatDO> findByStatusAndTypeInOrderByTopFlagDescTopLevelAscUpdateTimeDesc(String status, List<String> types);
+    List<ChatDO> findByStatusAndTypeInOrderByTopLevelAscUpdateTimeDesc(String status, List<String> types);
 
     //查询对应的chat
     Optional<ChatDO> findFirstByIdAndStatus(Long id, String status);

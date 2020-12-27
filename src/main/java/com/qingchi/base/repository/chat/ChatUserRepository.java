@@ -20,16 +20,22 @@ public interface ChatUserRepository extends JpaRepository<ChatUserDO, Long> {
     List<ChatUserDO> findByChatTypeNotInAndChatStatusAndUserIdAndStatusOrderByTopFlagDescChatTopLevelAscUpdateTimeDesc(List<String> chatTypes, String chatStatus, Integer userId, String status);
 */
 
-    Optional<ChatUserDO> findFirstByChatIdAndUserIdAndStatus(Long chatId, Integer userId, String status);
-    Optional<ChatUserDO> findFirstByChatIdAndUserId(Long chatId, Integer userId);
+    //查询chat下，user的chatUser
+    Optional<ChatUserDO> findFirstByChatIdAndChatStatusAndUserId(Long chatId, String chatStatus, Integer userId);
 
-    Optional<ChatUserDO> findFirstByUserIdAndReceiveUserId(Integer userId, Integer receiveUserId);
+    //只有发送消息时，才需要使用这个，校验状态，其他情况不需要
+    Optional<ChatUserDO> findFirstByChatIdAndChatStatusAndUserIdAndStatus(Long chatId, String chatStatus, Integer userId, String status);
+
+    Optional<ChatUserDO> findFirstByChatStatusAndUserIdAndReceiveUserId(String chatStatus, Integer userId, Integer receiveUserId);
 
 
-    List<ChatUserDO> findByChatIdAndStatus(Long chatId, String status);
+    //只有发送消息时，才需要使用这个，校验状态，其他情况不需要
+    List<ChatUserDO> findByChatIdAndChatStatusAndStatus(Long chatId, String chatStatus, String status);
+
+    List<ChatUserDO> findByChatIdAndChatStatus(Long chatId, String chatStatus);
 
     //根据chatuserId，chatUserStatus，topFlag，update，frontShow
 
-    //先不使用chat状态
-    List<ChatUserDO> findByUserIdAndStatusAndFrontShowTrueOrderByTopFlagDescUpdateTimeDesc(Integer userId, String status);
+    //先不使用chat状态，查询user下的chatuser,根据topLevel倒序，topflag倒序，更新时间倒序
+    List<ChatUserDO> findByChatStatusAndUserIdAndFrontShowTrueOrderByChatTopLevelDescTopFlagDescUpdateTimeDesc(String chatStatus, Integer userId);
 }

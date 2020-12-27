@@ -65,6 +65,12 @@ public class TencentCloud {
     }
 
     public static boolean textIsViolation(String content) {
+        return false;
+//        return textIsViolationAPI(content);
+    }
+
+
+    public static boolean textIsViolationAPI(String content) {
         final byte[] textBytes = content.getBytes(StandardCharsets.UTF_8);
         final CmsClient client = getCmsClient();
         final Base64.Encoder encoder = Base64.getEncoder();
