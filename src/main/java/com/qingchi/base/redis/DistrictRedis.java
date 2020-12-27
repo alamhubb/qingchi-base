@@ -72,6 +72,7 @@ public class DistrictRedis {
                 List<DistrictDO> districtDOS = getByParentAdCode(district.getAdCode());
                 districtVO.setChilds(this.recurseSetChild(districtDOS));
             }
+            districtVOS.add(districtVO);
         }
         return districtVOS;
     }
