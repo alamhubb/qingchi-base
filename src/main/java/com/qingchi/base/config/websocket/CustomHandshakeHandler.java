@@ -20,7 +20,6 @@ public class CustomHandshakeHandler extends DefaultHandshakeHandler {
         //websocket下就从req中拿token
         //获取token认证
         String token = TokenUtils.getToken();
-        System.out.println("token:" + token);
         //32为非法token，但是在这里是正常token，代表临时用户
         //如果为32位token则在这里可以直接使用
         if (TokenUtils.notCorrect(token) && (token == null || token.length() != 32)) {

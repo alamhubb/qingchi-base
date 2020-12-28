@@ -37,7 +37,6 @@ public class NewWebSocketServer {
      */
     @OnOpen
     public void onOpen(Session session, @PathParam("token") String userId) {
-        System.out.println(userId);
         this.session = session;
         this.userId = userId;
         if (webSocketMap.containsKey(userId)) {
