@@ -49,6 +49,9 @@ public class ChatUserDO {
     //每一个用户对于这个群聊的状态
     //需要有一个地方记录，状态有哪些
 //    只有enable时可以发送消息，其他状态必须先转为开启才能发送消息
+    //1，如果为关闭，则显示发起开启，和待开启一样，只要状态不为代开起，就没有pay
+    //2.如果为代开起，付费，则需要点击开启，或者发送时提示是否要给对方发送并开启会话
+    //3. 如果为被关闭，则不显示，发送消息报错
     private String status;
     private Integer unreadNum;
     //仅前台展示字段,前台自己判断生成
@@ -134,16 +137,17 @@ public class ChatUserDO {
         }
     }
 
+    //只关闭自己
     public void changeStatusClose(Date date) {
         this.setUpdateTime(date);
         this.setFrontShow(false);
         this.setStatus(ChatUserStatus.close);
     }
 
-    public void changeStatusBeClose(Date date) {
+    /*public void changeStatusBeClose(Date date) {
         this.setUpdateTime(date);
         this.setStatus(ChatUserStatus.beClose);
-    }
+    }*/
 
     //创建私聊时，需要根据chat状态决定chatUser状态，有两种情况，直接开启和待开启，msg可删除时，则无需再使用lastcontent
     /*public ChatUserDO(ChatDO chatDO, Integer userId, Integer receiveUserId) {

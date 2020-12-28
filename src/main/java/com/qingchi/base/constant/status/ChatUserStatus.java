@@ -11,6 +11,10 @@ import java.util.List;
 public class ChatUserStatus extends BaseStatus {
     //enable 只有enable时可以发送消息，其他状态必须先转为开启才能发送消息
 
+    //1，如果为关闭，则显示发起开启，和待开启一样，只要状态不为代开起，就没有pay
+    //2.如果为代开起，付费，则需要点击开启，或者发送时提示是否要给对方发送并开启会话
+    //3. 如果为被关闭，则不显示，发送消息报错
+
     //    chatuser 待开启，启用，已解除、被解除、，查所有状态的chatUser
 //    哪些状态可开启，待开启，和 自己是 已解除，你发送消息，则开启，会将自己的状态改为，启用，
     public static final String waitOpen = ConstStatus.waitOpen;
