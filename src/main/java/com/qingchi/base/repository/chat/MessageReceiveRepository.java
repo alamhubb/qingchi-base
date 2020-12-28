@@ -15,13 +15,14 @@ import java.util.List;
  */
 public interface MessageReceiveRepository extends JpaRepository<MessageReceiveDO, Long> {
 
-    //将ids的未读变为已读，查询出来更改
+    //chatId下所有未读变为已读，查询出来更改
 //    List<MessageReceiveDO> findByChatUserIdAndMessageStatusInAndStatusAndIsReadFalseAndIdInOrderByCreateTimeDescIdDesc(Integer chatUserId, List<String> msgStatus, String status, List<Long> ids);
-    List<MessageReceiveDO> findByChatUserIdAndStatusAndIsReadFalse(Long chatUserId, String status);
-
+    List<MessageReceiveDO> findByChatUserIdAndChatUserStatusAndStatusAndIsReadFalse(Long chatUserId, String chatUserStatus, String status);
 
     //查询消息列表，根据chatUserId、msgReceiveStatus、msgIds 按照msgReceiveStatus 倒序排序
-    List<MessageReceiveDO> findTop31ByChatUserIdAndStatusAndMessageIdNotInOrderByIdDesc(Long chatUserId, String msgReceiveStatus, List<Long> ids);
+    //调用这两个之前必须先判断 chat 为enable
+    List<MessageReceiveDO> findTop30ByChatUserIdAndChatUserStatusAndStatusAndMessageIdNotInOrderByIdDesc(Long chatUserId, String chatUserStatus, String msgReceiveStatus, List<Long> ids);
 
-    List<MessageReceiveDO> findTop30ByChatUserIdAndStatusAndMessageIdNotInOrderByIdDesc(Long chatUserId, String msgReceiveStatus, List<Long> ids);
+    List<MessageReceiveDO> findTop31ByChatUserIdAndChatUserStatusAndStatusAndMessageIdNotInOrderByIdDesc(Long chatUserId, String chatUserStatus, String msgReceiveStatus, List<Long> ids);
+
 }

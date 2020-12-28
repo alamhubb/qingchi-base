@@ -2,6 +2,7 @@ package com.qingchi.base.repository.chat;
 
 import com.qingchi.base.model.BaseModelDO;
 import com.qingchi.base.model.chat.MessageDO;
+import com.qingchi.base.model.chat.MessageReceiveDO;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -17,7 +18,10 @@ import java.util.Optional;
 public interface MessageRepository extends JpaRepository<MessageDO, Long> {
     Optional<BaseModelDO> findOneByIdAndStatus(Long id, String status);
 
-    List<MessageDO> findTop30ByChatIdAndStatusInAndIdNotInOrderByCreateTimeDescIdDesc(Long chatId, List<String> msgStatus, List<Long> ids);
+    List<MessageDO> findTop30ByChatIdAndStatusAndIdNotInOrderByIdDesc(Long chatId, String msgStatus, List<Long> ids);
+
+    List<MessageDO> findTop31ByChatIdAndStatusAndIdNotInOrderByIdDesc(Long chatId, String msgStatus, List<Long> ids);
+
 
     Optional<MessageDO> findFirstOneByIdAndStatusIn(Long id, List<String> msgStatus);
 

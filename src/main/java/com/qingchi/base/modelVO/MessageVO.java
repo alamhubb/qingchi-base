@@ -5,8 +5,10 @@ import com.qingchi.base.constant.CommonStatus;
 import com.qingchi.base.model.chat.MessageDO;
 import com.qingchi.base.model.chat.MessageReceiveDO;
 import com.qingchi.base.repository.chat.MessageRepository;
+import io.netty.util.internal.ObjectUtil;
 import lombok.Data;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
 import java.util.Collections;
@@ -52,8 +54,6 @@ public class MessageVO {
         this.id = messageDO.getId();
         this.content = messageDO.getContent();
         this.createTime = messageDO.getCreateTime().getTime();
-
-
         //消息的用户
         this.user = new MessageUserVO(messageDO.getUserId());
         this.isMine = false;
@@ -69,14 +69,19 @@ public class MessageVO {
         this.isRead = false;
     }
 
+    /*
+    //默认发送的自己的消息，可是有下面那个根据id判断的了就不需要这个了吧
     public MessageVO(MessageDO messageDO, String mineFlag) {
         this(messageDO);
         this.isMine = true;
-    }
+    }*/
 
     public MessageVO(MessageDO messageDO, Integer userId) {
         this(messageDO);
-        this.isMine = this.user.getId().equals(userId);
+        //不为空判断
+        if (!ObjectUtils.isEmpty(userId)) {
+            this.isMine = this.user.getId().equals(userId);
+        }
     }
 
     public MessageVO(MessageReceiveDO messageReceive) {
@@ -103,17 +108,19 @@ public class MessageVO {
     }
 
     //未登录的消息
-    public static List<MessageVO> messageDOToVOS(List<MessageDO> messageDOS) {
+    public static List<MessageVO> messageDOToVOS(List<MessageDO> messageDOS, Integer userId) {
         //翻转数组,因为查出来的是倒序的
-        List<MessageVO> messageVOS = messageDOS.stream().map(MessageVO::new).collect(Collectors.toList());
+        List<MessageVO> messageVOS = messageDOS.stream().map(messageDO -> new MessageVO(messageDO, userId)).collect(Collectors.toList());
         Collections.reverse(messageVOS);
         return messageVOS;
     }
 
+    /*
+    //根据chatUser判断了，不需要这个了
     public static List<MessageVO> messageDOToVOS(List<MessageDO> messageDOS, Integer userId) {
         //翻转数组,因为查出来的是倒序的 (ChatUserDO chatUserDO) -> new ChatVO(chatUserDO, true)
         List<MessageVO> messageVOS = messageDOS.stream().map((MessageDO msg) -> new MessageVO(msg, userId)).collect(Collectors.toList());
         Collections.reverse(messageVOS);
         return messageVOS;
-    }
+    }*/
 }

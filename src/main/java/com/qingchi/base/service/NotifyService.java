@@ -83,8 +83,7 @@ public class NotifyService {
             if (NotifyType.message.equals(notifyType)) {
                 Optional<MessageReceiveDO> messageReceiveDOOptional = messageReceiveRepository.findById(notify.getMessageReceiveId());
                 MessageReceiveDO messageReceiveDO = messageReceiveDOOptional.get();
-                Optional<ChatUserDO> chatUserDOOptional = chatUserRepository.findById(messageReceiveDO.getChatUserId());
-                ChatUserDO chatUserDO = chatUserDOOptional.get();
+                ChatUserDO chatUserDO = messageReceiveDO.getChatUser();
 //                Optional<ChatDO> chatDOOptional = chatRepository.findById();
                 //如果群聊，直接发送给两个服务器在线的所有用户，并且查找他们未读的。
                 //未登录的时候也查询群聊里面的所有内容

@@ -45,7 +45,8 @@ public class MessageReceiveDO {
     /**
      * 这个用来记录chat的昵称，和头像的。只有私聊的状态下才有
      */
-    private Long chatUserId;
+    @ManyToOne
+    private ChatUserDO chatUser;
 
     private Date createTime;
 
@@ -54,9 +55,9 @@ public class MessageReceiveDO {
     public MessageReceiveDO() {
     }
 
-    public MessageReceiveDO(Long chatUserId, Integer userId, Integer receiveUserId, MessageDO message) {
+    public MessageReceiveDO(ChatUserDO chatUser, Integer userId, Integer receiveUserId, MessageDO message) {
         Date curDate = new Date();
-        this.chatUserId = chatUserId;
+        this.chatUser = chatUser;
         this.userId = userId;
         this.receiveUserId = receiveUserId;
         this.message = message;

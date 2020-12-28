@@ -39,7 +39,7 @@ public class NotifyVO {
 
     public NotifyVO(NotifyDO notify, UserDO user, MessageReceiveDO messageReceive, ChatUserDO chatUser, ChatDO chatDO) {
         this(user);
-        this.chat = new ChatVO(messageReceive, chatUser, chatDO);
+        this.chat = new ChatVO(chatDO, chatUser, messageReceive);
         this.receiveUserId = notify.getReceiveUserId();
         this.type = notify.getType();
         //此处没有给content赋值是因为推送，不需要显示，推送后点击未读列表查询就行

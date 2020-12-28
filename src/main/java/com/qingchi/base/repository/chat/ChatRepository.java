@@ -15,11 +15,15 @@ import java.util.Optional;
  */
 public interface ChatRepository extends JpaRepository<ChatDO, Long> {
 
-    List<ChatDO> findByStatusAndTypeInOrderByTopLevelAscUpdateTimeDesc(String status, List<String> types);
+    //未登录只能查询官方的消息列表
+    List<ChatDO> findByStatusAndTypeInOrderByTopLevelDescUpdateTimeDesc(String status, List<String> types);
 
-    //查询对应的chat
+    //查询对应的chat,读取时，任何类型的chat都可以改为已读，但是sys类型不操作
     Optional<ChatDO> findFirstByIdAndStatus(Long id, String status);
 
-    //查询系统群聊
-    Optional<ChatDO> findFirstOneByTypeAndStatusOrderByCreateTime(String type, String status);
+    //开启时，只有私聊的才能开启
+    Optional<ChatDO> findFirstByIdAndTypeAndStatus(Long id, String type, String status);
+
+    //用户注册的时候查询系统群聊，把用户加入启用的系统群聊
+    List<ChatDO> findByTypeAndStatus(String type, String status);
 }

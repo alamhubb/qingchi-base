@@ -188,9 +188,8 @@ public class UserService {
         user.setInviteCode(userInviteCode.substring(userInviteCode.length() - 8));
         user = userRepository.save(user);
         //注释掉圈子功能
-        Optional<ChatDO> optionalChatDO = chatRepository.findFirstOneByTypeAndStatusOrderByCreateTime(ChatType.system_group, CommonStatus.enable);
-        if (optionalChatDO.isPresent()) {
-            ChatDO chat = optionalChatDO.get();
+        List<ChatDO> chatDOS = chatRepository.findByTypeAndStatus(ChatType.system_group, CommonStatus.enable);
+        for (ChatDO chat : chatDOS) {
             ChatUserDO chatUserDO = new ChatUserDO(chat, user.getId());
             chatUserRepository.save(chatUserDO);
         }
