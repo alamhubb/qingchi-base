@@ -68,6 +68,7 @@ public class ChatVO {
     private Boolean topFlag;
     private Boolean vipFlag;
     private String loadMore;
+    private String lastContent;
 
     //只有当对方未关注你，且还不是你的好友，才需要使用这个字段判断。
     //需要支付开启会话
@@ -98,6 +99,7 @@ public class ChatVO {
         this.messages = new ArrayList<>();
         this.needPayOpen = true;
         this.loadMore = LoadMoreType.noMore;
+        this.lastContent = "会话待开启";
     }
 
     //初始查询的时候为99
@@ -112,6 +114,10 @@ public class ChatVO {
             this.loadMore = LoadMoreType.more;
         }
         this.messages = MessageVO.messageDOToVOS(messageDOS, null);
+        //最后一个的content
+        if (this.messages.size() > 0) {
+            this.lastContent = this.messages.get(this.messages.size() - 1).getContent();
+        }
     }
 
     //初始查询的时候为99
@@ -126,7 +132,7 @@ public class ChatVO {
 
 
     //chatuser
-
+    //推消息时，查列表时  的基础
     public ChatVO(ChatDO chat, ChatUserDO chatUserDO) {
         this(chat);
 
@@ -152,6 +158,7 @@ public class ChatVO {
         //如果不为待开启，则不为需要支付开启
         if (!this.status.equals(ChatUserStatus.waitOpen)) {
             this.needPayOpen = false;
+            this.lastContent = "会话已开启";
         }
     }
 
@@ -178,6 +185,10 @@ public class ChatVO {
             }
             //        List<MessageReceiveDO> messageReceiveDOS = new ArrayList<>();
             this.messages = MessageVO.messageReceiveDOToVOS(messageReceiveDOS);
+        }
+        //最后一个的content
+        if (this.messages.size() > 0) {
+            this.lastContent = this.messages.get(this.messages.size() - 1).getContent();
         }
     }
 
@@ -207,12 +218,14 @@ public class ChatVO {
         //没user ，没记录未读数量，所以设置为1
         this.unreadNum = 1;
         this.messages = Collections.singletonList(new MessageVO(messageDO, false));
+        this.lastContent = this.messages.get(0).getContent();
     }
 
     //推送单个消息的chat，推送单个消息
     public ChatVO(ChatDO chat, ChatUserDO chatUser, MessageReceiveDO messageReceiveDO) {
         this(chat, chatUser);
         this.messages = Collections.singletonList(new MessageVO(messageReceiveDO));
+        this.lastContent = this.messages.get(0).getContent();
         //todo 不能推送所有未读的，因为有些未读的可能已经推送过了，但用户没看而已，再推送就会重复，解决这个问题需要标识哪些是已经推送过了，websocket中记录，目前前台通过重连充重新查询chats解决
 //        List<MessageReceiveDO> messageReceiveDOS = messageReceiveRepository.findByChatUserAndMessageStatusAndReceiveUserAndStatusAndIsReadFalseOrderByCreateTimeDescIdDesc(messageReceiveDO.getChatUser(), CommonStatus.enable, messageReceiveDO.getReceiveUser(), CommonStatus.enable);
 //        this.messages = MessageVO.messageDOToVOS(messageReceiveDOS);
