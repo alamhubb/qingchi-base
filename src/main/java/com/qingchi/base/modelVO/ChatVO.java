@@ -88,6 +88,7 @@ public class ChatVO {
         }
         //如果没有chatUser为不置顶， 未登录时不置顶
         this.topFlag = false;
+        this.status = chatDO.getStatus();
         //chat的最后一条消息时间大家都一样，把最后一条删除也是最后一条的时间
         this.updateTime = chatDO.getUpdateTime().getTime();
         this.topType = chatDO.getTopLevel();
@@ -175,7 +176,13 @@ public class ChatVO {
 
     public static List<ChatVO> chatUserDOToVOS(List<ChatUserDO> chatUsers) {
         //查询的时候chat列表展示不为当前用户的
-        return chatUsers.stream().map((ChatUserDO chatUserDO) -> new ChatVO(chatUserDO.getChat(), chatUserDO, true)).collect(Collectors.toList());
+        return chatUsers.stream().map((ChatUserDO chatUserDO) -> {
+            if (chatUserDO.getStatus().equals(ChatUserStatus.enable)) {
+                return new ChatVO(chatUserDO.getChat(), chatUserDO, true);
+            } else {
+                return new ChatVO(chatUserDO.getChat(), chatUserDO);
+            }
+        }).collect(Collectors.toList());
     }
 
     //用户未登陆时
@@ -184,8 +191,8 @@ public class ChatVO {
         return chats.stream().map((ChatDO chatDO) -> new ChatVO(chatDO, true)).collect(Collectors.toList());
     }
 
-    public static List<ChatVO> chatDOToVOS(List<ChatDO> chats, Integer userId) {
+    /*public static List<ChatVO> chatDOToVOS(List<ChatDO> chats, Integer userId) {
         //查询的时候chat列表展示不为当前用户的
         return chats.stream().map((ChatDO chatDO) -> new ChatVO(chatDO, userId)).collect(Collectors.toList());
-    }
+    }*/
 }

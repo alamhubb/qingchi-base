@@ -138,10 +138,15 @@ public class ChatUserDO {
     }
 
     //只关闭自己
-    public void changeStatusClose(Date date) {
-        this.setUpdateTime(date);
+    public void closeChat() {
+        this.setUpdateTime(new Date());
         this.setFrontShow(false);
         this.setStatus(ChatUserStatus.close);
+    }
+
+    public void frontShowFalse() {
+        this.setUpdateTime(new Date());
+        this.setFrontShow(false);
     }
 
     /*public void changeStatusBeClose(Date date) {
