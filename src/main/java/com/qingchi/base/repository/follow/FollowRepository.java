@@ -25,8 +25,8 @@ public interface FollowRepository extends JpaRepository<FollowDO, Integer> {
     /**
      * 查询一个用户是否已经关注了另一个用户
      *
-     * @param user
-     * @param beUser
+     * @param userId
+     * @param beUserId
      * @return
      */
     Integer countByUserIdAndBeUserIdAndStatus(Integer userId, Integer beUserId, String status);

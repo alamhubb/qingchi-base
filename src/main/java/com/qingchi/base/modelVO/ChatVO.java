@@ -3,6 +3,7 @@ package com.qingchi.base.modelVO;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.qingchi.base.constant.ChatType;
 import com.qingchi.base.constant.CommonConst;
+import com.qingchi.base.constant.CommonStatus;
 import com.qingchi.base.constant.LoadMoreType;
 import com.qingchi.base.constant.status.ChatStatus;
 import com.qingchi.base.constant.status.ChatUserStatus;
@@ -15,6 +16,7 @@ import com.qingchi.base.model.user.UserDO;
 import com.qingchi.base.repository.chat.ChatRepository;
 import com.qingchi.base.repository.chat.MessageReceiveRepository;
 import com.qingchi.base.repository.chat.MessageRepository;
+import com.qingchi.base.repository.follow.FollowRepository;
 import com.qingchi.base.utils.UserUtils;
 import lombok.Data;
 import org.springframework.stereotype.Component;
@@ -38,6 +40,8 @@ public class ChatVO {
 
     private static ChatRepository chatRepository;
 
+    private static FollowRepository followRepository;
+
     @Resource
     public void setMessageReceiveRepository(MessageReceiveRepository messageReceiveRepository) {
         ChatVO.messageReceiveRepository = messageReceiveRepository;
@@ -53,8 +57,14 @@ public class ChatVO {
         ChatVO.chatRepository = chatRepository;
     }
 
+    @Resource
+    public void setFollowRepository(FollowRepository followRepository) {
+        ChatVO.followRepository = followRepository;
+    }
+
     private Long id;
     private String nickname;
+    //暂时未用，未来有用的，参考微信私聊右上角，会从那里可以进入用户的详情
     private Integer receiveUserId;
     private String avatar;
     private String type;
@@ -72,6 +82,7 @@ public class ChatVO {
 
     //只有当对方未关注你，且还不是你的好友，才需要使用这个字段判断。
     //需要支付开启会话
+    //只有为私聊，待开启，未关注的时候才需要为true
     private Boolean needPayOpen;
 
     public ChatVO() {
@@ -97,14 +108,14 @@ public class ChatVO {
         this.topLevel = chatDO.getTopLevel();
         this.unreadNum = 0;
         this.messages = new ArrayList<>();
-        this.needPayOpen = true;
         this.loadMore = LoadMoreType.noMore;
-        this.lastContent = "会话待开启";
+        this.needPayOpen = false;
+        this.lastContent = "会话已开启";
     }
 
     //初始查询的时候为99
-    //用户未登录的情况
-    public ChatVO(ChatDO chatDO, boolean queryMsgFlag) {
+    //用户未登录的情况，和群聊的情况会触发这里
+    public ChatVO(ChatDO chatDO, Integer userId) {
         this(chatDO);
         //查询用户这个chatUser下的消息
         //已经确认过chat为可用的
@@ -113,7 +124,7 @@ public class ChatVO {
             messageDOS.subList(1, 31);
             this.loadMore = LoadMoreType.more;
         }
-        this.messages = MessageVO.messageDOToVOS(messageDOS, null);
+        this.messages = MessageVO.messageDOToVOS(messageDOS, userId);
         //最后一个的content
         if (this.messages.size() > 0) {
             this.lastContent = this.messages.get(this.messages.size() - 1).getContent();
@@ -149,16 +160,22 @@ public class ChatVO {
             this.avatar = receiveUser.getAvatar();
             this.vipFlag = receiveUser.getVipFlag();
             this.receiveUserId = receiveUser.getId();
+            //不为系统群聊才有记录了未读数量，才有未读数量
+            this.unreadNum = chatUserDO.getUnreadNum();
         }
         //chat的最后一条消息时间大家都一样，把最后一条删除也是最后一条的时间
         this.topFlag = chatUserDO.getTopFlag();
-        this.unreadNum = chatUserDO.getUnreadNum();
         this.updateTime = chatUserDO.getUpdateTime().getTime();
         this.status = chatUserDO.getStatus();
-        //如果不为待开启，则不为需要支付开启
-        if (!this.status.equals(ChatUserStatus.waitOpen)) {
-            this.needPayOpen = false;
-            this.lastContent = "会话已开启";
+        //只有为待开启才判断是否需要支付开启
+        if (this.status.equals(ChatUserStatus.waitOpen)) {
+            this.lastContent = "会话待开启";
+            //查询对方是否关注了自己，只有未关注的情况，才能支付
+            Integer followCount = followRepository.countByUserIdAndBeUserIdAndStatus(this.receiveUserId, chatUserDO.getUserId(), CommonStatus.enable);
+            if (followCount < 1) {
+                //只在这一个地方判断，只有私聊的时候，且只有私聊的这里才会触发
+                this.needPayOpen = true;
+            }
         }
     }
 
@@ -168,24 +185,14 @@ public class ChatVO {
     public ChatVO(ChatDO chatDO, ChatUserDO chatUserDO, boolean queryMsgFlag) {
         this(chatDO, chatUserDO);
         //系统群聊读取message表
-        if (chatDO.getType().equals(ChatType.system_group)) {
-            //已经确认过chat为可用的
-            List<MessageDO> messageDOS = messageRepository.findTop31ByChatIdAndStatusAndIdNotInOrderByIdDesc(chatDO.getId(), ChatStatus.enable, CommonConst.emptyLongIds);
-            if (messageDOS.size() > 30) {
-                messageDOS.subList(1, 31);
-                this.loadMore = LoadMoreType.more;
-            }
-            this.messages = MessageVO.messageDOToVOS(messageDOS, chatUserDO.getUserId());
-        } else {
-            //查询用户这个chatUser下的消息
-            List<MessageReceiveDO> messageReceiveDOS = messageReceiveRepository.findTop31ByChatUserIdAndChatUserStatusAndStatusAndMessageIdNotInOrderByIdDesc(chatUserDO.getId(), ChatUserStatus.enable, MessageStatus.enable, CommonConst.emptyLongIds);
-            if (messageReceiveDOS.size() > 30) {
-                messageReceiveDOS.subList(1, 31);
-                this.loadMore = LoadMoreType.more;
-            }
-            //        List<MessageReceiveDO> messageReceiveDOS = new ArrayList<>();
-            this.messages = MessageVO.messageReceiveDOToVOS(messageReceiveDOS);
+        //查询用户这个chatUser下的消息
+        List<MessageReceiveDO> messageReceiveDOS = messageReceiveRepository.findTop31ByChatUserIdAndChatUserStatusAndStatusAndMessageIdNotInOrderByIdDesc(chatUserDO.getId(), ChatUserStatus.enable, MessageStatus.enable, CommonConst.emptyLongIds);
+        if (messageReceiveDOS.size() > 30) {
+            messageReceiveDOS.subList(1, 31);
+            this.loadMore = LoadMoreType.more;
         }
+        //        List<MessageReceiveDO> messageReceiveDOS = new ArrayList<>();
+        this.messages = MessageVO.messageReceiveDOToVOS(messageReceiveDOS);
         //最后一个的content
         if (this.messages.size() > 0) {
             this.lastContent = this.messages.get(this.messages.size() - 1).getContent();
@@ -195,13 +202,21 @@ public class ChatVO {
 
     public static List<ChatVO> chatUserDOToVOS(List<ChatUserDO> chatUsers) {
         //查询的时候chat列表展示不为当前用户的
-        return chatUsers.stream().map((ChatUserDO chatUserDO) -> new ChatVO(chatUserDO.getChat(), chatUserDO, true)).collect(Collectors.toList());
+        return chatUsers.stream().map((ChatUserDO chatUserDO) -> {
+            ChatDO chat = chatUserDO.getChat();
+            if (chat.getType().equals(ChatType.system_group)) {
+                return new ChatVO(chat, chatUserDO.getUserId());
+            } else {
+                return new ChatVO(chat, chatUserDO, true);
+            }
+        }).collect(Collectors.toList());
     }
 
     //用户未登陆时
     public static List<ChatVO> chatDOToVOS(List<ChatDO> chats) {
+        Integer userId = null;
         //查询的时候chat列表展示不为当前用户的
-        return chats.stream().map((ChatDO chatDO) -> new ChatVO(chatDO, true)).collect(Collectors.toList());
+        return chats.stream().map((ChatDO chatDO) -> new ChatVO(chatDO, userId)).collect(Collectors.toList());
     }
 
     /*public static List<ChatVO> chatDOToVOS(List<ChatDO> chats, Integer userId) {
