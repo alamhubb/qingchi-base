@@ -7,6 +7,6 @@ import com.qingchi.base.constant.CommonStatus;
  */
 public class BaseStatus {
     //启用
-    public static final String enable = CommonStatus.enable;
+    public static final String enable = ConstStatus.enable;
 }
 

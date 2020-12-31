@@ -7,6 +7,8 @@ import com.qingchi.base.constant.CommonStatus;
  */
 public class ConstStatus {
     //启用
+    public static final String enable = "正常";
+
     //待开启，需要有一方发送一条消息后，才改为开启状态
     public static final String waitOpen = "待开启";
 
@@ -14,5 +16,6 @@ public class ConstStatus {
 
     public static final String beClose = "被关闭";
 
+    public static final String delete = "已删除";
 }
 
