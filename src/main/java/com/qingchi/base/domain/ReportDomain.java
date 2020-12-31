@@ -78,6 +78,7 @@ public class ReportDomain {
                     .checkContentTriggerKeywords(modelDO, modelDO.getReportContentType());
 
 //            if (!CollectionUtils.isEmpty(keywordsTriggers) || antispamDO.hasViolate()) {
+            //如果触发了关键词
             if (!CollectionUtils.isEmpty(keywordsTriggers)) {
                 String reportCause;
                 ReportDO reportDO;
