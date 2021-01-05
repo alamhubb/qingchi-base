@@ -1,5 +1,6 @@
 package com.qingchi.base.service;
 
+import com.qingchi.base.common.ResultVO;
 import com.qingchi.base.model.chat.ChatDO;
 import com.qingchi.base.model.chat.ChatUserDO;
 import com.qingchi.base.config.AppConfigConst;
@@ -9,6 +10,7 @@ import com.qingchi.base.model.user.IdCardDO;
 import com.qingchi.base.model.user.UserDetailDO;
 import com.qingchi.base.repository.chat.ChatRepository;
 import com.qingchi.base.repository.chat.ChatUserRepository;
+import com.qingchi.base.repository.keywords.IllegalWordRepository;
 import com.qingchi.base.repository.shell.VipOrderRepository;
 import com.qingchi.base.repository.shell.VipSaleRepository;
 import com.qingchi.base.repository.user.IdCardRepository;
@@ -47,7 +49,7 @@ public class UserService {
     @Resource
     private VipSaleRepository vipSaleRepository;
     @Resource
-    private VipOrderRepository vipOrderRepository;
+    private IllegalWordService illegalWordService;
     @Value("${config.initAvatar}")
     private String initAvatar;
     @Resource
@@ -85,11 +87,10 @@ public class UserService {
     }
 
     public UserDO createUser(String nickname, String avatar, String gender, String birthday, String city, String platform) {
-        List<String> illegals = AppConfigConst.illegals;
-        for (String illegal : illegals) {
-            if (StringUtils.isNotEmpty(illegal) && StringUtils.containsIgnoreCase(nickname, illegal)) {
-                nickname = "未设置昵称";
-            }
+        ResultVO resultVO = illegalWordService.checkHasIllegals(nickname);
+        //校验内容是否违规
+        if (resultVO.hasError()) {
+            nickname = "未设置昵称";
         }
         UserDO user = new UserDO();
         user.setPlatform(platform);

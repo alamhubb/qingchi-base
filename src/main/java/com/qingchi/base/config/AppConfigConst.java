@@ -1,6 +1,7 @@
 package com.qingchi.base.config;
 
 
+import com.qingchi.base.model.system.IllegalWordDO;
 import com.qingchi.base.model.system.KeywordsDO;
 import com.qingchi.base.utils.QingLogger;
 import org.springframework.stereotype.Component;
@@ -102,8 +103,7 @@ public class AppConfigConst {
     }
 
     //1171970219 用户要求此qq加入违禁词
-    public static List<String> illegals = new ArrayList<>();
-
+    private static List<IllegalWordDO> illegals = new ArrayList<>();
 
     public static List<KeywordsDO> keywordDOs = new ArrayList<>();
 
@@ -112,8 +112,12 @@ public class AppConfigConst {
         QingLogger.logger.info("更新违禁词，违禁词数量：" + AppConfigConst.keywordDOs.size());
     }
 
-    public static void setIllegals(List<String> illegals) {
+    public static void setIllegals(List<IllegalWordDO> illegals) {
         AppConfigConst.illegals = illegals;
         QingLogger.logger.info("更新违禁词，违禁词数量：" + AppConfigConst.illegals.size() + "，违禁词列表：" + AppConfigConst.illegals);
+    }
+
+    public static List<IllegalWordDO> getIllegals() {
+        return AppConfigConst.illegals;
     }
 }

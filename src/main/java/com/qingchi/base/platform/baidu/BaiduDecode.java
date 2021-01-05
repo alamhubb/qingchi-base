@@ -71,9 +71,14 @@ public class BaiduDecode {
      * @param args
      */
     public static void main(String[] args) {
-        String resultString = DigestUtils.md5Hex("appid=wx682b729afd398217&bank_type=OTHERS&cash_fee=100&fee_type=CNY&is_subscribe=N&mch_id=1577008821&nonce_str=bdf0ec1ef9e544e5808898c5a6b9664f&openid=o0eddwMgEjdxvrXu2mCRf5r8hfNA&out_trade_no=WAS47702020071701275186800000621&result_code=SUCCESS&return_code=SUCCESS&time_end=20200717012758&total_fee=100&trade_type=APP&transaction_id=4200000593202007172090511370&key=5a1847ff8a664d6f984f81f889985e62");
+        /*String resultString = DigestUtils.md5Hex("appid=wx682b729afd398217&bank_type=OTHERS&cash_fee=100&fee_type=CNY&is_subscribe=N&mch_id=1577008821&nonce_str=bdf0ec1ef9e544e5808898c5a6b9664f&openid=o0eddwMgEjdxvrXu2mCRf5r8hfNA&out_trade_no=WAS47702020071701275186800000621&result_code=SUCCESS&return_code=SUCCESS&time_end=20200717012758&total_fee=100&trade_type=APP&transaction_id=4200000593202007172090511370&key=5a1847ff8a664d6f984f81f889985e62");
         System.out.println(resultString);
+*/
 
+        StringBuilder words = new StringBuilder();
+        words.append("发手机快放假啊四路口附近开了撒就浪费点卡即刻类1");
+        words.substring(0,words.length()-1);
+        System.out.println(words.substring(0,words.length()-1));
         //连接本地的 Redis 服务
     }
 //        String token = TokenUtils.getUUID();
