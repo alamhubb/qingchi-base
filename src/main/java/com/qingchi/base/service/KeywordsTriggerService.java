@@ -5,6 +5,7 @@ import com.qingchi.base.config.AppConfigConst;
 import com.qingchi.base.model.BaseModelDO;
 import com.qingchi.base.model.system.KeywordsDO;
 import com.qingchi.base.model.system.KeywordsTriggerDetailDO;
+import com.qingchi.base.utils.KeywordsUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -42,7 +43,7 @@ public class KeywordsTriggerService {
         //不为null
         if (baseModelContent != null) {
             //删除空白字符和空格，去除特殊字符，升为大写
-            String contentFormat = StringFilter(baseModelContent.trim().replaceAll("\\s*", "").toUpperCase());
+            String contentFormat = KeywordsUtils.StringFilter(baseModelContent.trim().replaceAll("\\s*", "").toUpperCase());
             //文本不为空,拼音和文本都需要判空
             if (StringUtils.isNotEmpty(contentFormat)) {
                 //以下逻辑，为获取每个字在拼音中的位置， 拼音与文字位置对应，做的辅助功能
@@ -167,15 +168,5 @@ public class KeywordsTriggerService {
             );
         }
         return keywordsTriggerDetailDO;
-    }
-
-
-    public static String StringFilter(String str) {
-        // 只允许字母和数字 // String regEx ="[^a-zA-Z0-9]";
-        // 清除掉所有特殊字符
-        String regEx = "[`_~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
-        Pattern p = Pattern.compile(regEx);
-        Matcher m = p.matcher(str);
-        return m.replaceAll("").trim().replaceAll(" ", "");
     }
 }
