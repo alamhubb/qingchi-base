@@ -16,7 +16,7 @@ public class KeywordsUtils {
         String regEx = "[`_~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
         Pattern p = Pattern.compile(regEx);
         Matcher m = p.matcher(str);
-        System.out.println(123);
+        System.out.println(1234);
         return m.replaceAll("").trim().replaceAll(" ", "");
 
     }
