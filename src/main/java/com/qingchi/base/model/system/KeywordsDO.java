@@ -31,8 +31,10 @@ public class KeywordsDO {
     private String textShow;
     //会去除空格和变为大写
     private String variationText;
+    private String pinyinText;
     //仅用来展示
     private String variationTextShow;
+    private String pinyinTextShow;
 
     private String status;
 
@@ -40,6 +42,8 @@ public class KeywordsDO {
     private Boolean openText;
     @Column(columnDefinition = "bit default true")
     private Boolean openVariation;
+    @Column(columnDefinition = "bit default true")
+    private Boolean openPinyin;
 
     //关键词变种
     private String cause;
@@ -48,8 +52,8 @@ public class KeywordsDO {
     private String reopenCause;
     private String closeTextCause;
     private String reopenTextCause;
-    private String closeVariationCause;
-    private String reopenVariationCause;
+    private String closePinyinCause;
+    private String reopenPinyinCause;
 
     @Column(columnDefinition = "int default 0")
     private Integer totalNum;
@@ -85,20 +89,37 @@ public class KeywordsDO {
     @Column(columnDefinition = "double default 0")
     private Double variationNormalRatio;
 
-    //do必须有空的构造函数
-    public KeywordsDO() {}
 
-    public KeywordsDO(String content) {
+    @Column(columnDefinition = "int default 0")
+    private Integer pinyinTotalNum;
+    @Column(columnDefinition = "int default 0")
+    private Integer pinyinViolateNum;
+    @Column(columnDefinition = "double default 0")
+    private Double pinyinViolateRatio;
+    @Column(columnDefinition = "int default 0")
+    private Integer pinyinNormalNum;
+    @Column(columnDefinition = "double default 0")
+    private Double pinyinNormalRatio;
+
+    //do必须有空的构造函数
+    public KeywordsDO() {
+    }
+
+    public KeywordsDO(String content, String cause) {
         this.setTextShow(content);
         this.setText(content.toUpperCase());
 
         String contentVariation = Pinyin.toPinyin(content, " ");
         this.setVariationTextShow(contentVariation);
+        this.setPinyinTextShow(contentVariation);
         this.setVariationText(contentVariation.replaceAll(" ", "").toUpperCase());
+        this.setPinyinText(contentVariation.replaceAll(" ", "").toUpperCase());
+
         this.setCause(cause);
 
         this.setOpenText(true);
         this.setOpenVariation(true);
+        this.setOpenPinyin(true);
 
         this.setTotalNum(0);
         this.setNormalNum(0);
@@ -117,5 +138,11 @@ public class KeywordsDO {
         this.setVariationNormalRatio(0.0);
         this.setVariationViolateRatio(0.0);
         this.setVariationViolateNum(0);
+
+        this.setPinyinTotalNum(0);
+        this.setPinyinNormalNum(0);
+        this.setPinyinNormalRatio(0.0);
+        this.setPinyinViolateRatio(0.0);
+        this.setPinyinViolateNum(0);
     }
 }
