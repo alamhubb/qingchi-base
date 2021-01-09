@@ -2,6 +2,7 @@ package com.qingchi.base.factory;
 
 import com.qingchi.base.constant.CommonStatus;
 import com.qingchi.base.constant.ReportSourceType;
+import com.qingchi.base.constant.status.ReportStatus;
 import com.qingchi.base.model.BaseModelDO;
 import com.qingchi.base.model.report.ReportDO;
 import com.qingchi.base.repository.talk.CommentRepository;
@@ -31,9 +32,9 @@ public class ReportFactory {
         reportDO.setCause(cause);
         reportDO.setReportContent(model.getContent());
         if (ReportSourceType.userReport.equals(reportSourceType)) {
-            reportDO.setStatus(CommonStatus.audit);
+            reportDO.setStatus(ReportStatus.audit);
         } else {
-            reportDO.setStatus(CommonStatus.preAudit);
+            reportDO.setStatus(ReportStatus.preAudit);
         }
         //第一次被举报设置默认值
         reportDO.setSupportRatio(100);

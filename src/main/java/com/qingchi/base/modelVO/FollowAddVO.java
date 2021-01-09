@@ -2,6 +2,7 @@ package com.qingchi.base.modelVO;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.qingchi.base.constant.CommonStatus;
+import com.qingchi.base.constant.status.BaseStatus;
 import com.qingchi.base.model.user.FollowDO;
 import com.qingchi.base.model.user.UserDO;
 import lombok.Data;
@@ -33,7 +34,7 @@ public class FollowAddVO {
         beUser.setFansNum(beUser.getFansNum() + 1);
         followDO.setUserId(user.getId());
         followDO.setBeUserId(beUser.getId());
-        followDO.setStatus(CommonStatus.enable);
+        followDO.setStatus(BaseStatus.enable);
         return followDO;
     }
 

@@ -3,6 +3,9 @@ package com.qingchi.base.domain;
 import com.qingchi.base.config.AppConfigConst;
 import com.qingchi.base.common.ResultVO;
 import com.qingchi.base.constant.*;
+import com.qingchi.base.constant.status.ContentStatus;
+import com.qingchi.base.constant.status.ReportStatus;
+import com.qingchi.base.constant.status.UserStatus;
 import com.qingchi.base.entity.ReportDetailUtils;
 import com.qingchi.base.factory.ReportFactory;
 import com.qingchi.base.model.BaseModelDO;
@@ -117,7 +120,7 @@ public class ReportDomain {
 
 
                 //更新 model
-                modelDO.setStatus(CommonStatus.preAudit);
+                modelDO.setStatus(ContentStatus.preAudit);
                 modelDO.setUpdateTime(new Date());
                 baseModelService.save(modelDO);
             }
@@ -164,14 +167,14 @@ public class ReportDomain {
         Integer reportCountHide = (Integer) AppConfigConst.appConfigMap.get(AppConfigConst.reportCountHideKey);
         //大于阀值，更改动态和用户状态，否则只增加举报此数
         if (modelReportNum >= reportCountHide) {
-            modelDO.setStatus(CommonStatus.audit);
+            modelDO.setStatus(ContentStatus.audit);
             resultVO.setData(ErrorMsg.reportSubmitHide);
 
             //如果被举报的用户是官方，则不修改官方的用户状态、只存在于官方自己举报自己时，也不能修改自己的用户状态
             if (!receiveUser.getType().equals(UserType.system)) {
                 //只有用户为正常时，才改为待审核，如果用户已被封禁则不改变状态
-                if (receiveUser.getStatus().equals(CommonStatus.enable)) {
-                    receiveUser.setStatus(CommonStatus.audit);
+                if (receiveUser.getStatus().equals(UserStatus.enable)) {
+                    receiveUser.setStatus(UserStatus.audit);
                 }
             }
             //记录用户的被举报此数
@@ -243,9 +246,9 @@ public class ReportDomain {
                 if (isViolation) {
                     Date todayZero = DateUtils.getTodayZeroDate();
                     //查看用户待审核的举报数量
-                    Integer reportSuccessCount = reportDetailRepository.countByUserIdAndStatusNotAndCreateTimeBetween(detailUser.getId(), CommonStatus.audit, todayZero, curDate);
+                    Integer reportSuccessCount = reportDetailRepository.countByUserIdAndStatusNotAndCreateTimeBetween(detailUser.getId(), ReportStatus.audit, todayZero, curDate);
                     //todo  缺少发送通知功能，等我精神好了在写
-                    reportDetailDO.setStatus(CommonStatus.violation);
+                    reportDetailDO.setStatus(ReportStatus.violation);
                     if (reportSuccessCount > 9) {
                         //todo 发送通知
                     } else {
@@ -264,7 +267,7 @@ public class ReportDomain {
                     }
                 } else {
                     //如果今天已经成功举报了10个以上，则不再发放奖励
-                    reportDetailDO.setStatus(CommonStatus.noViolation);
+                    reportDetailDO.setStatus(ReportStatus.noViolation);
                     //错误的举报，user减分
                     justiceValueOrderDO.setJusticeValue(-AppConfigConst.reportErrorValue);
                     detailUser.setJusticeValue(detailUser.getJusticeValue() - AppConfigConst.reportErrorValue);

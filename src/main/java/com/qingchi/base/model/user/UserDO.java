@@ -3,6 +3,8 @@ package com.qingchi.base.model.user;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.qingchi.base.constant.CommonStatus;
+import com.qingchi.base.constant.status.ReportStatus;
+import com.qingchi.base.constant.status.UserStatus;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -149,7 +151,7 @@ public class UserDO implements Serializable {
      */
     @JsonIgnore
     public boolean isCertified() {
-        return Arrays.asList(CommonStatus.audit, CommonStatus.noViolation).contains(this.idCardStatus);
+        return Arrays.asList(UserStatus.audit, ReportStatus.noViolation).contains(this.idCardStatus);
     }
 
 

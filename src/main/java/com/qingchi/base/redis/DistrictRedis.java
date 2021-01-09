@@ -2,6 +2,7 @@ package com.qingchi.base.redis;
 
 import com.qingchi.base.constant.CommonConst;
 import com.qingchi.base.constant.CommonStatus;
+import com.qingchi.base.constant.status.BaseStatus;
 import com.qingchi.base.model.system.DistrictDO;
 import com.qingchi.base.repository.district.DistrictRepository;
 import org.apache.commons.lang.StringUtils;
@@ -88,7 +89,7 @@ public class DistrictRedis {
         hotDistrict.setAdName("热门");
         hotDistrict.setProvinceName("中国");
         hotDistrict.setAdCode("999999");
-        List<DistrictDO> districtDOS = districtRepository.findTop20ByDistrictCodeAndStatusOrderByCountDesc("1", CommonStatus.enable);
+        List<DistrictDO> districtDOS = districtRepository.findTop20ByDistrictCodeAndStatusOrderByCountDesc("1", BaseStatus.enable);
 
         hotDistrict.setChilds(recurseSetChild(districtDOS));
         return hotDistrict;
@@ -102,10 +103,10 @@ public class DistrictRedis {
      * @return
      */
     private List<DistrictDO> getByParentAdCode(String parentAdCode) {
-        return districtRepository.findByParentAdCodeAndStatusOrderByAdCode(parentAdCode, CommonStatus.enable);
+        return districtRepository.findByParentAdCodeAndStatusOrderByAdCode(parentAdCode, BaseStatus.enable);
     }
 
     private List<DistrictDO> getChinaProvinces() {
-        return districtRepository.findByParentAdCodeAndStatusOrderByAdCode(CommonConst.chinaDistrictCode, CommonStatus.enable);
+        return districtRepository.findByParentAdCodeAndStatusOrderByAdCode(CommonConst.chinaDistrictCode, BaseStatus.enable);
     }
 }

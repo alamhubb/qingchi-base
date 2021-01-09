@@ -1,6 +1,7 @@
 package com.qingchi.base.common;
 
 import com.qingchi.base.config.AppConfigConst;
+import com.qingchi.base.constant.status.BaseStatus;
 import com.qingchi.base.model.system.IllegalWordDO;
 import com.qingchi.base.constant.CommonStatus;
 import com.qingchi.base.model.system.KeywordsDO;
@@ -40,7 +41,7 @@ public class ViolationKeywordsService {
     private KeywordsRepository keywordsRepository;
 
     public void refreshKeywords() {
-        List<IllegalWordDO> illegalWordDOS = illegalWordRepository.findAllByStatus(CommonStatus.enable);
+        List<IllegalWordDO> illegalWordDOS = illegalWordRepository.findAllByStatus(BaseStatus.enable);
         AppConfigConst.setIllegals(illegalWordDOS);
 
         List<KeywordsDO> keywordsDOS= keywordsRepository.findAllByStatusIsNull();

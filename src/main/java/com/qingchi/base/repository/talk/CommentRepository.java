@@ -1,6 +1,7 @@
 package com.qingchi.base.repository.talk;
 
 import com.qingchi.base.constant.CommonStatus;
+import com.qingchi.base.constant.status.ContentStatus;
 import com.qingchi.base.model.BaseModelDO;
 import com.qingchi.base.model.talk.CommentDO;
 import com.qingchi.base.model.talk.TalkDO;
@@ -72,7 +73,7 @@ public interface CommentRepository extends JpaRepository<CommentDO, Integer> {
 
     @Transactional
     @Modifying
-    @Query("update CommentDO t set t.status = '" + CommonStatus.delete + "' where t.userId=:userId and t.status in (:status)")
+    @Query("update CommentDO t set t.status = '" + ContentStatus.delete + "' where t.userId=:userId and t.status in (:status)")
     Integer updateUserCommentStatusIn(@Param("userId") Integer userId, @Param("status") List<String> status);
 
     Optional<CommentDO> findOneByIdAndStatusIn(Integer id, List<String> status);

@@ -3,6 +3,7 @@ package com.qingchi.base.model.report;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.qingchi.base.constant.CommonStatus;
+import com.qingchi.base.constant.status.ReportStatus;
 import com.qingchi.base.model.BaseModelDO;
 import com.qingchi.base.model.user.UserDO;
 import lombok.Data;
@@ -64,7 +65,7 @@ public class ReportDetailDO {
         this.reportType = reportType;
 
         this.createTime = new Date();
-        this.status = CommonStatus.audit;
+        this.status = ReportStatus.audit;
     }
 
     public ReportDetailDO(String cause, String reportType, ReportDO reportDO, BaseModelDO model, Integer requestUserId) {

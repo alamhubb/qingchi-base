@@ -1,6 +1,9 @@
 package com.qingchi.base.service;
 
 import com.qingchi.base.common.ResultVO;
+import com.qingchi.base.constant.status.ChatStatus;
+import com.qingchi.base.constant.status.ReportStatus;
+import com.qingchi.base.constant.status.UserStatus;
 import com.qingchi.base.model.chat.ChatDO;
 import com.qingchi.base.model.chat.ChatUserDO;
 import com.qingchi.base.config.AppConfigConst;
@@ -159,7 +162,7 @@ public class UserService {
         user.setShell(0);
         //财富等级
         user.setWealthLevel(0);
-        user.setStatus(CommonStatus.enable);
+        user.setStatus(UserStatus.enable);
         user.setViolationCount(0);
         user.setFansNum(0);
         user.setFollowNum(0);
@@ -189,7 +192,7 @@ public class UserService {
         user.setInviteCode(userInviteCode.substring(userInviteCode.length() - 8));
         user = userRepository.save(user);
         //注释掉圈子功能
-        List<ChatDO> chatDOS = chatRepository.findByTypeAndStatus(ChatType.system_group, CommonStatus.enable);
+        List<ChatDO> chatDOS = chatRepository.findByTypeAndStatus(ChatType.system_group, ChatStatus.enable);
         for (ChatDO chat : chatDOS) {
             ChatUserDO chatUserDO = new ChatUserDO(chat, user.getId());
             chatUserRepository.save(chatUserDO);
@@ -219,7 +222,7 @@ public class UserService {
         idCardDO.setUserId(user.getId());
         idCardRepository.save(idCardDO);
         // 用户身份证状态改为审核中状态
-        user.setIdCardStatus(CommonStatus.audit);
+        user.setIdCardStatus(ReportStatus.audit);
         user.setUpdateTime(new Date());
         //提交认证，更新颜值分
         this.updateFaceContent(user);

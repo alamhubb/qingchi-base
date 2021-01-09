@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.qingchi.base.constant.CommonStatus;
 import com.qingchi.base.constant.ExpenseType;
 import com.qingchi.base.constant.ShellOrderType;
+import com.qingchi.base.constant.status.BaseStatus;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -55,7 +56,7 @@ public class ShellOrderDO implements Serializable {
         Date date = new Date();
         this.createTime = date;
         this.updateTime = date;
-        this.status = CommonStatus.enable;
+        this.status = BaseStatus.enable;
         this.type = type;
         this.expenseType = expenseType;
         this.expenseDetailType = expenseType;

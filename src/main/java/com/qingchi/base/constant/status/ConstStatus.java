@@ -17,5 +17,17 @@ public class ConstStatus {
     public static final String beClose = "被关闭";
 
     public static final String delete = "已删除";
+
+    //待审核
+    public static final String preAudit = "预审核";
+
+    //待审核
+    public static final String audit = "审核中";
+
+    //违规
+    public static final String violation = "违规";
+
+    //不违规
+    public static final String noViolation = "不违规";
 }
 

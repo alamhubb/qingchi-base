@@ -50,17 +50,17 @@ public class KeywordsTriggerService {
                 //以下逻辑，为获取每个字在拼音中的位置， 拼音与文字位置对应，做的辅助功能
 
                 //转为拼音先有分割，记录位置使用
-                String contentVariationHasEmpty = Pinyin.toPinyin(contentFormat, " ");
+                String contentPinyinHasEmpty = Pinyin.toPinyin(contentFormat, " ");
                 //替换分割，改为无分割，并转为大写
-                String contentVariation = contentVariationHasEmpty.replaceAll(" ", "").toUpperCase();
+                String contentPinyin = contentPinyinHasEmpty.replaceAll(" ", "").toUpperCase();
                 //一组拼音对应一个字
-                String[] contentVariationAry = contentVariationHasEmpty.split(" ");
+                String[] contentPinyinAry = contentPinyinHasEmpty.split(" ");
                 //存储字体索引对应的 拼音字数结束位置
                 List<Integer> contentWordIndexList = new ArrayList<>();
                 contentWordIndexList.add(0);
                 int sum = 0;
                 //遍历拼音数组，得到每个字在拼音中的位置
-                for (String s : contentVariationAry) {
+                for (String s : contentPinyinAry) {
                     //位置叠加
                     sum += s.length();
                     //记录自己这个字在拼音中的结束位置
@@ -98,13 +98,13 @@ public class KeywordsTriggerService {
                                 );
                             }
                             //如果打开了变种匹配
-                        } else if (keywordsDO.getOpenVariation()) {
-//                            keywordsTriggerFlag = isKeywordsTriggerFlag(matchContentLength, contentFormat, contentVariation, contentWordIndexList, wordDO, keywordsTriggerDetailDO);
+                        } else if (keywordsDO.getOpenPinyin()) {
+//                            keywordsTriggerFlag = isKeywordsTriggerFlag(matchContentLength, contentFormat, contentPinyin, contentWordIndexList, wordDO, keywordsTriggerDetailDO);
                             //如果文本不违规次数小于20，或者 违规率大于0.2
-                            if (keywordsDO.getVariationNormalNum() < 20 || keywordsDO.getVariationViolateRatio() > 0.2) {
+                            if (keywordsDO.getPinyinNormalNum() < 20 || keywordsDO.getPinyinViolateRatio() > 0.2) {
                                 modifyReportStatusFlag = true;
                                 //得到拼音的变种
-                                keywordsTriggerDetailDO = getKeywordsTriggerDetailDO(baseModelContent, baseModelId, contentType, matchContentLength, contentFormat, contentVariation, contentWordIndexList, keywordsDO);
+                                keywordsTriggerDetailDO = getKeywordsTriggerDetailDO(baseModelContent, baseModelId, contentType, matchContentLength, contentFormat, contentPinyin, contentWordIndexList, keywordsDO);
                             }
                         }
 
@@ -126,24 +126,24 @@ public class KeywordsTriggerService {
             String contentType,
             int matchContentLength,
             String contentFormat,
-            String contentVariation,
+            String contentPinyin,
             List<Integer> contentWordIndexList,
             KeywordsDO wordDO
     ) {
-        String keywordsVariation = wordDO.getVariationText();
+        String keywordsPinyin = wordDO.getPinyinText();
 
         KeywordsTriggerDetailDO keywordsTriggerDetailDO = null;
         //如果变种文本，包含变种关键词
-        if (contentVariation.contains(keywordsVariation)) {
+        if (contentPinyin.contains(keywordsPinyin)) {
             //修改标识为触发
             //获得变种关键词的位置
-            int subStartVariationIndex = contentVariation.indexOf(keywordsVariation);
+            int subStartPinyinIndex = contentPinyin.indexOf(keywordsPinyin);
 
             int subStartIndex = 0;
             for (int j = 0; j < contentWordIndexList.size(); j++) {
                 Integer strIndex = contentWordIndexList.get(j);
                 //变种关键词位置，大于等于字体位置时，则为这个字体
-                if (strIndex > subStartVariationIndex) {
+                if (strIndex > subStartPinyinIndex) {
                     subStartIndex = j - 1;
                     break;
                 }
@@ -153,7 +153,7 @@ public class KeywordsTriggerService {
             String matchText = StringUtils.substring(contentFormat, subStartIndex, subStartIndex + matchContentLength);
 
             //存储主要变种内容
-            String matchVariation = StringUtils.substring(contentVariation, subStartVariationIndex, subStartVariationIndex + matchContentLength * 3);
+            String matchPinyin = StringUtils.substring(contentPinyin, subStartPinyinIndex, subStartPinyinIndex + matchContentLength * 3);
 
             //变种匹配构建
             keywordsTriggerDetailDO = new KeywordsTriggerDetailDO(
@@ -163,8 +163,8 @@ public class KeywordsTriggerService {
                     wordDO.getId(),
                     wordDO.getTextShow(),
                     matchText,
-                    wordDO.getVariationText(),
-                    matchVariation
+                    wordDO.getPinyinText(),
+                    matchPinyin
             );
         }
         return keywordsTriggerDetailDO;

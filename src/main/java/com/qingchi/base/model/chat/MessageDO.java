@@ -6,6 +6,7 @@ import com.qingchi.base.constant.CommonStatus;
 import com.qingchi.base.constant.MessageContentType;
 import com.qingchi.base.constant.MessageType;
 import com.qingchi.base.constant.ReportContentType;
+import com.qingchi.base.constant.status.ContentStatus;
 import com.qingchi.base.model.BaseModelDO;
 import lombok.Data;
 
@@ -67,7 +68,7 @@ public class MessageDO implements BaseModelDO, Serializable {
         this.content = content;
         this.reportContentType = ReportContentType.message;
         //自己的chatUser，记录自己的未读消息数量，和是否置顶了，生成chatVo时使用
-        this.status = CommonStatus.enable;
+        this.status = ContentStatus.enable;
         this.readStatus = CommonStatus.sending;
         this.readNum = 0;
         this.type = MessageType.simple;

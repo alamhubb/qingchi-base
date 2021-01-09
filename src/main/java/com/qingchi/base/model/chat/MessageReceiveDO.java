@@ -2,6 +2,7 @@ package com.qingchi.base.model.chat;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.qingchi.base.constant.CommonStatus;
+import com.qingchi.base.constant.status.ContentStatus;
 import lombok.Data;
 import lombok.ToString;
 
@@ -61,7 +62,7 @@ public class MessageReceiveDO {
         this.userId = userId;
         this.receiveUserId = receiveUserId;
         this.message = message;
-        this.status = CommonStatus.enable;
+        this.status = ContentStatus.enable;
         //接受消息的人看的
         this.isRead = false;
         this.isMine = false;

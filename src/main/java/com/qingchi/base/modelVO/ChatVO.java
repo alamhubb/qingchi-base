@@ -7,6 +7,7 @@ import com.qingchi.base.constant.CommonStatus;
 import com.qingchi.base.constant.LoadMoreType;
 import com.qingchi.base.constant.status.ChatStatus;
 import com.qingchi.base.constant.status.ChatUserStatus;
+import com.qingchi.base.constant.status.ConstStatus;
 import com.qingchi.base.constant.status.MessageStatus;
 import com.qingchi.base.model.chat.ChatDO;
 import com.qingchi.base.model.chat.ChatUserDO;
@@ -171,7 +172,7 @@ public class ChatVO {
         if (this.status.equals(ChatUserStatus.waitOpen)) {
             this.lastContent = "会话待开启";
             //查询对方是否关注了自己，只有未关注的情况，才能支付
-            Integer followCount = followRepository.countByUserIdAndBeUserIdAndStatus(this.receiveUserId, chatUserDO.getUserId(), CommonStatus.enable);
+            Integer followCount = followRepository.countByUserIdAndBeUserIdAndStatus(this.receiveUserId, chatUserDO.getUserId(), ConstStatus.enable);
             if (followCount < 1) {
                 //只在这一个地方判断，只有私聊的时候，且只有私聊的这里才会触发
                 this.needPayOpen = true;

@@ -1,31 +1,20 @@
 package com.qingchi.base.constant.status;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
  * 会话聊天的状态，暂不使用，全局使用一样的，全局统一，避免出现文字不一致问题
  */
-public class ContentStatus extends BaseStatus {
-    //启用
-    //删除
-
-    //预审核
-    public static final String preAudit = ConstStatus.preAudit;
-
+public class UserStatus extends BaseStatus {
     //审核中
     public static final String audit = ConstStatus.audit;
-
-
     //违规
     public static final String violation = ConstStatus.violation;
+//    public static final String waitOpen = CommonStatus.waitOpen;
 
-    //他人可见
-    public static final List<String> otherCanSeeContentStatus = Collections.singletonList(ContentStatus.enable);
-
-    //自己可见，自己能比别人多看见预审核状态的信息
-    public static final List<String> selfCanSeeContentStatus = Arrays.asList(ContentStatus.enable, ContentStatus.preAudit);
+    public static final List<String> allStatus = Arrays.asList(UserStatus.enable);
+//    public static final List<String> allStatus = Arrays.asList(ChatStatus.enable, ChatStatus.waitOpen);
 
    /* //启用
     public static final String normal = "正常";

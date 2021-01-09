@@ -1,6 +1,7 @@
 package com.qingchi.base.utils;
 
 import com.qingchi.base.constant.CommonStatus;
+import com.qingchi.base.constant.status.UserStatus;
 import com.qingchi.base.model.user.UserDO;
 import com.qingchi.base.repository.user.TokenRepository;
 import com.qingchi.base.store.UserStore;
@@ -63,7 +64,7 @@ public class UserUtils {
                         if (userDOOptional.isPresent()) {
                             UserDO user = userDOOptional.get();
                             //不为违规被封禁
-                            if (!user.getStatus().equals(CommonStatus.violation)) {
+                            if (!user.getStatus().equals(UserStatus.violation)) {
                                 return user;
                             }
                         }

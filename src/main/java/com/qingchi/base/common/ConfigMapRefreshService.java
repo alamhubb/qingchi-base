@@ -1,6 +1,7 @@
 package com.qingchi.base.common;
 
 import com.qingchi.base.config.AppConfigConst;
+import com.qingchi.base.constant.status.BaseStatus;
 import com.qingchi.base.model.system.AppConfigDO;
 import com.qingchi.base.constant.CommonStatus;
 import com.qingchi.base.constant.ConfigValueType;
@@ -22,7 +23,7 @@ public class ConfigMapRefreshService {
     private AppConfigRepository appConfigRepository;
 
     public void refreshConfigMap() {
-        List<AppConfigDO> appConfigDOS = appConfigRepository.findAllByStatusOrderByCreateTimeDesc(CommonStatus.enable);
+        List<AppConfigDO> appConfigDOS = appConfigRepository.findAllByStatusOrderByCreateTimeDesc(BaseStatus.enable);
         for (AppConfigDO appConfigDO : appConfigDOS) {
             if (ConfigValueType.stringType.equals(appConfigDO.getValueType())) {
                 AppConfigConst.appConfigMap.put(appConfigDO.getConfigKey(), appConfigDO.getStringValue());

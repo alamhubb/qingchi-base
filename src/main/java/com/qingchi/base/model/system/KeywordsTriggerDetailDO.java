@@ -3,6 +3,8 @@ package com.qingchi.base.model.system;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.qingchi.base.constant.CommonStatus;
+import com.qingchi.base.constant.status.ContentStatus;
+import com.qingchi.base.constant.status.ReportStatus;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -43,13 +45,13 @@ public class KeywordsTriggerDetailDO {
     //主要违规部分，内容未处理前，违规的部分
     private String matchText;
 
-    private String keywordsVariation;
+    private String keywordsPinyin;
     //主要违规变种部分，内容处理转变为拼音之后，违规的部分
-    private String matchVariation;
+    private String matchPinyin;
 
     private String auditResult;
     //有变种
-    private Boolean hasVariation;
+    private Boolean usePinyin;
     private Date createTime;
     private Date updateTime;
 
@@ -63,7 +65,7 @@ public class KeywordsTriggerDetailDO {
             Integer keywordsId,
             String keywordsText,
             String matchText,
-            Boolean hasVariation
+            Boolean usePinyin
     ) {
         this.content = content;
         this.contentId = contentId;
@@ -71,10 +73,10 @@ public class KeywordsTriggerDetailDO {
         this.keywordsId = keywordsId;
         this.keywordsText = keywordsText;
         this.matchText = matchText;
-        this.hasVariation = hasVariation;
+        this.usePinyin = usePinyin;
         this.createTime = new Date();
         this.updateTime = new Date();
-        this.auditResult = CommonStatus.preAudit;
+        this.auditResult = ReportStatus.preAudit;
     }
 
     //变种匹配构建
@@ -85,11 +87,11 @@ public class KeywordsTriggerDetailDO {
             Integer keywordsId,
             String keywordsText,
             String matchText,
-            String keywordsVariation,
-            String matchVariation
+            String keywordsPinyin,
+            String matchPinyin
     ) {
         this(content, contentId, contentType, keywordsId, keywordsText, matchText, true);
-        this.keywordsVariation = keywordsVariation;
-        this.matchVariation = matchVariation;
+        this.keywordsPinyin = keywordsPinyin;
+        this.matchPinyin = matchPinyin;
     }
 }

@@ -4,6 +4,10 @@ import com.qingchi.base.constant.CommonStatus;
 import com.qingchi.base.constant.UserType;
 import com.qingchi.base.constant.ViolateLevel;
 import com.qingchi.base.constant.ViolateType;
+import com.qingchi.base.constant.status.BaseStatus;
+import com.qingchi.base.constant.status.ContentStatus;
+import com.qingchi.base.constant.status.ReportStatus;
+import com.qingchi.base.constant.status.UserStatus;
 import com.qingchi.base.model.BaseModelDO;
 import com.qingchi.base.model.report.ReportDO;
 import com.qingchi.base.model.user.UserDO;
@@ -54,7 +58,7 @@ public class ViolationService {
         //存在被举报后，用户自己把这条状态删了的情况
         if (CommonStatus.auditStatus.contains(contentStatus)) {
             modelDO.setUpdateTime(curDate);
-            modelDO.setStatus(CommonStatus.noViolation);
+            modelDO.setStatus(ContentStatus.enable);
         } else {
             QingLogger.logger.info("用户已经自行删除此条内容：{}", contentStatus);
         }
@@ -66,7 +70,7 @@ public class ViolationService {
         String userStatus = violationUser.getStatus();
         //存在用户发表其他内容，被封的情况
         if (CommonStatus.auditStatus.contains(userStatus)) {
-            violationUser.setStatus(CommonStatus.enable);
+            violationUser.setStatus(UserStatus.enable);
         } else {
             QingLogger.logger.info("用户状态已经被更改：{}", userStatus);
         }
@@ -76,7 +80,7 @@ public class ViolationService {
         reportDO.setAuditType(ViolateType.noViolation);
         reportDO.setAuditNote(auditNote);
         //审核状态变更
-        reportDO.setStatus(CommonStatus.noViolation);
+        reportDO.setStatus(ReportStatus.noViolation);
         reportDO.setUpdateTime(curDate);
         reportDO.setValid(false);
         //发放奖励和修改举报详情内容
@@ -86,7 +90,7 @@ public class ViolationService {
     public void violateService(BaseModelDO modelDO, String violateType, String auditNote, ReportDO reportDO) {
         Date curDate = new Date();
         //修改内容，需要修改状态、删除原因、更新时间
-        modelDO.setStatus(CommonStatus.violation);
+        modelDO.setStatus(ContentStatus.violation);
         //如果封禁的话，要改一下删除原因，删除原因，违规原因
         modelDO.setDeleteReason(violateType);
         modelDO.setUpdateTime(curDate);
@@ -113,7 +117,7 @@ public class ViolationService {
 
         //修改举报内容
         reportDO.setAuditType(violateType);
-        reportDO.setStatus(CommonStatus.violation);
+        reportDO.setStatus(ReportStatus.violation);
         reportDO.setAuditNote(auditNote);
         reportDO.setUpdateTime(curDate);
         reportDO.setValid(true);
@@ -167,11 +171,11 @@ public class ViolationService {
         violationUser.setUpdateTime(curDate);
 
         //用户状态不为已封禁，才修改用户状态
-        if (!violationUser.getStatus().equals(CommonStatus.violation)) {
+        if (!violationUser.getStatus().equals(UserStatus.violation)) {
             //如果封禁天数大于0，则封禁
             if (violationDay > 0) {
                 //封禁
-                violationUser.setStatus(CommonStatus.violation);
+                violationUser.setStatus(UserStatus.violation);
                 //封禁日期不叠加，按最后得算
                 //封禁截止日期
                 violationUser.setViolationStartTime(new Date());
@@ -179,7 +183,7 @@ public class ViolationService {
                 calendar.add(Calendar.DATE, violationDay);
                 violationUser.setViolationEndTime(calendar.getTime());
             } else {
-                violationUser.setStatus(CommonStatus.enable);
+                violationUser.setStatus(UserStatus.enable);
             }
         }
         //不删除之前的内容

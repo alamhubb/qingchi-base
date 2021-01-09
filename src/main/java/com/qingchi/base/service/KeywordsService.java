@@ -1,6 +1,7 @@
 package com.qingchi.base.service;
 
 import com.qingchi.base.constant.CommonStatus;
+import com.qingchi.base.constant.status.ReportStatus;
 import com.qingchi.base.model.report.ReportDO;
 import com.qingchi.base.model.system.KeywordsDO;
 import com.qingchi.base.model.system.KeywordsTriggerDetailDO;
@@ -21,7 +22,7 @@ public class KeywordsService {
         Integer totalNum = wordDO.getTotalNum() + 1;
         wordDO.setTotalNum(totalNum);
         //违规
-        if (CommonStatus.violation.equals(auditResult)) {
+        if (ReportStatus.violation.equals(auditResult)) {
             //关键词违规总量+1
             Integer violateNum = wordDO.getViolateNum() + 1;
             wordDO.setViolateNum(violateNum);
@@ -32,33 +33,38 @@ public class KeywordsService {
         }
         //违规比和不违规比，统一使用 违规比除总数，1-违规比=不违规比，公式，见底部
         //查看是否为变种匹配
-        if (keywordsTriggerDetailDO.getHasVariation()) {
+        if (keywordsTriggerDetailDO.getUsePinyin()) {
             //这里变种可以加1
             //误触
             //计算主体误触率，总数+1
-            Integer pinyinTotalNum = wordDO.getVariationTotalNum() + 1;
-            wordDO.setVariationTotalNum(pinyinTotalNum);
+            Integer pinyinTotalNum = wordDO.getPinyinTotalNum() + 1;
+            wordDO.setPinyinTotalNum(pinyinTotalNum);
+            wordDO.setPinyinTotalNum(pinyinTotalNum);
             //违规
-            if (CommonStatus.violation.equals(auditResult)) {
+            if (ReportStatus.violation.equals(auditResult)) {
                 //违规+1
-                Integer pinyinViolateNum = wordDO.getVariationViolateNum() + 1;
-                wordDO.setVariationViolateNum(pinyinViolateNum);
+                Integer pinyinViolateNum = wordDO.getPinyinViolateNum() + 1;
+                wordDO.setPinyinViolateNum(pinyinViolateNum);
+                wordDO.setPinyinViolateNum(pinyinViolateNum);
             } else {
                 //误触+1
-                Integer pinyinNormalNum = wordDO.getVariationNormalNum() + 1;
-                wordDO.setVariationNormalNum(pinyinNormalNum);
+                Integer pinyinNormalNum = wordDO.getPinyinNormalNum() + 1;
+                wordDO.setPinyinNormalNum(pinyinNormalNum);
+                wordDO.setPinyinNormalNum(pinyinNormalNum);
             }
             //这里可以计算变种违规率
             //计算主体违规和误触比
-            wordDO.setVariationViolateRatio(wordDO.getVariationViolateNum().doubleValue() / pinyinTotalNum.doubleValue());
-            wordDO.setVariationNormalRatio(1 - wordDO.getVariationViolateRatio());
+            wordDO.setPinyinViolateRatio(wordDO.getPinyinViolateNum().doubleValue() / pinyinTotalNum.doubleValue());
+            wordDO.setPinyinViolateRatio(wordDO.getPinyinViolateNum().doubleValue() / pinyinTotalNum.doubleValue());
+            wordDO.setPinyinNormalRatio(1 - wordDO.getPinyinViolateRatio());
+            wordDO.setPinyinNormalRatio(1 - wordDO.getPinyinViolateRatio());
         } else {
             //这里可以文本触发总数+1
             Integer textTotalNum = wordDO.getTextTotalNum() + 1;
             wordDO.setTextTotalNum(textTotalNum);
             //关键词全匹配
             //违规
-            if (CommonStatus.violation.equals(auditResult)) {
+            if (ReportStatus.violation.equals(auditResult)) {
                 //违规+1
                 Integer textViolateNum = wordDO.getTextViolateNum() + 1;
                 wordDO.setTextViolateNum(textViolateNum);

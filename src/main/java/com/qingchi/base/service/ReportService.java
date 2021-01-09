@@ -3,6 +3,7 @@ package com.qingchi.base.service;
 import com.qingchi.base.config.AppConfigConst;
 import com.qingchi.base.constant.CommonStatus;
 import com.qingchi.base.constant.ReportSourceType;
+import com.qingchi.base.constant.status.ReportStatus;
 import com.qingchi.base.entity.ReportDetailUtils;
 import com.qingchi.base.factory.ReportFactory;
 import com.qingchi.base.model.report.ReportDO;
@@ -87,9 +88,9 @@ public class ReportService {
                 if (isViolation) {
                     Date todayZero = DateUtils.getTodayZeroDate();
                     //查看用户待审核的举报数量
-                    Integer reportSuccessCount = reportDetailRepository.countByUserIdAndStatusNotAndCreateTimeBetween(detailUser.getId(), CommonStatus.audit, todayZero, curDate);
+                    Integer reportSuccessCount = reportDetailRepository.countByUserIdAndStatusNotAndCreateTimeBetween(detailUser.getId(), ReportStatus.audit, todayZero, curDate);
                     //todo  缺少发送通知功能，等我精神好了在写
-                    reportDetailDO.setStatus(CommonStatus.violation);
+                    reportDetailDO.setStatus(ReportStatus.violation);
                     if (reportSuccessCount > 9) {
                         //todo 发送通知
                     } else {
@@ -108,7 +109,7 @@ public class ReportService {
                     }
                 } else {
                     //如果今天已经成功举报了10个以上，则不再发放奖励
-                    reportDetailDO.setStatus(CommonStatus.noViolation);
+                    reportDetailDO.setStatus(ReportStatus.noViolation);
                     //错误的举报，user减分
                     justiceValueOrderDO.setJusticeValue(-AppConfigConst.reportErrorValue);
                     detailUser.setJusticeValue(detailUser.getJusticeValue() - AppConfigConst.reportErrorValue);

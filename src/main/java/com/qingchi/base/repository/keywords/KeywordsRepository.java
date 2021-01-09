@@ -18,7 +18,6 @@ public interface KeywordsRepository extends JpaRepository<KeywordsDO, Integer> {
 
     //状态启用的，且文本违规率大于的，且开启了文本的
     List<KeywordsDO> findAllByStatusIsNullAndTextViolateRatioGreaterThanAndOpenTextTrue(Double violateRatio);
-    List<KeywordsDO> findAllByStatusIsNullAndVariationViolateRatioGreaterThanAndOpenTextTrue(Double violateRatio);
 
     List<KeywordsDO> findAllByStatusIsNullAndTotalNumGreaterThanOrderByTextViolateRatioDesc(Integer num);
 
@@ -30,7 +29,6 @@ public interface KeywordsRepository extends JpaRepository<KeywordsDO, Integer> {
 
     List<KeywordsDO> findTop100ByStatusIsNullAndTotalNumGreaterThanOrderByViolateRatioDesc(Integer num);
 
-    List<KeywordsDO> findTop100ByStatusIsNullAndTotalNumGreaterThanOrderByVariationViolateRatioDesc(Integer num);
 }
 
 

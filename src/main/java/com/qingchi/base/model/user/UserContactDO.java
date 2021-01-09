@@ -2,6 +2,7 @@ package com.qingchi.base.model.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.qingchi.base.constant.CommonStatus;
+import com.qingchi.base.constant.status.BaseStatus;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -37,7 +38,7 @@ public class UserContactDO implements Serializable {
         Date curDate = new Date();
         this.createTime = curDate;
         this.updateTime = curDate;
-        this.status = CommonStatus.enable;
+        this.status = BaseStatus.enable;
     }
 
     public UserContactDO(Integer userId, Integer beUserId, String type) {
