@@ -20,16 +20,15 @@ public class KeywordsService {
     private KeywordsRepository keywordsRepository;
 
 
-    public void calculateViolateRatioByReportStatus(ReportDO reportDO, KeywordsTriggerDetailDO keywordsTriggerDetailDO, Integer keywordsId) {
-        KeywordsDO wordDO = keywordsRepository.findById(keywordsId).get();
-
+    //计算关键词违规率，全匹配违规率，变种匹配率
+    public void calculateViolateRatioByReportStatus(String auditResult, KeywordsTriggerDetailDO keywordsTriggerDetailDO, KeywordsDO wordDO) {
         //关键词触发总量+1
         Integer totalNum = wordDO.getTotalNum() + 1;
         wordDO.setTotalNum(totalNum);
-
+        //查看是否为变种匹配
         if (keywordsTriggerDetailDO.getHasVariation()) {
             //违规
-            if (CommonStatus.violation.equals(reportDO.getStatus())) {
+            if (CommonStatus.violation.equals(auditResult)) {
                 //关键词违规总量+1
                 Integer violateNum = wordDO.getViolateNum() + 1;
                 wordDO.setViolateNum(violateNum);
@@ -61,8 +60,9 @@ public class KeywordsService {
                 wordDO.setVariationViolateRatio(1 - wordDO.getVariationNormalRatio());
             }
         } else {
+            //关键词全匹配
             //违规
-            if (CommonStatus.violation.equals(reportDO.getStatus())) {
+            if (CommonStatus.violation.equals(auditResult)) {
                 //关键词违规总量+1
                 Integer violateNum = wordDO.getViolateNum() + 1;
                 wordDO.setViolateNum(violateNum);
@@ -100,6 +100,4 @@ public class KeywordsService {
             }
         }
     }
-
-
 }

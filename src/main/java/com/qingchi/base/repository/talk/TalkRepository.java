@@ -1,9 +1,11 @@
 package com.qingchi.base.repository.talk;
 
 import com.qingchi.base.model.BaseModelDO;
+import com.qingchi.base.model.report.ReportDO;
 import com.qingchi.base.model.talk.TalkDO;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -108,6 +110,9 @@ public interface TalkRepository extends JpaRepository<TalkDO, Integer> {
     List<Object> countAndCreateTimeByCreateTimeBetween();
 
     List<TalkDO> findTop2000ByStatusAndViolateTypeOrderByIdDesc(String status, String violateType);
+
+    //查询关键词触发次数时使用
+    Page<TalkDO> findByStatusNotInOrderByIdDesc(Pageable pageable, List<String> status);
 
     List<TalkDO> findTop20ByUserIdOrderByIdDesc(Integer userId);
 

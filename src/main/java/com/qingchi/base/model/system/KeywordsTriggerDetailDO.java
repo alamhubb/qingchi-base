@@ -48,7 +48,7 @@ public class KeywordsTriggerDetailDO {
     private String matchVariation;
 
     private String auditResult;
-
+    //有变种
     private Boolean hasVariation;
     private Date createTime;
     private Date updateTime;
@@ -77,6 +77,7 @@ public class KeywordsTriggerDetailDO {
         this.auditResult = CommonStatus.preAudit;
     }
 
+    //变种匹配构建
     public KeywordsTriggerDetailDO(
             String content,
             Integer contentId,
@@ -84,11 +85,10 @@ public class KeywordsTriggerDetailDO {
             Integer keywordsId,
             String keywordsText,
             String matchText,
-            Boolean hasVariation,
             String keywordsVariation,
             String matchVariation
     ) {
-        this(content, contentId, contentType, keywordsId, keywordsText, matchText, hasVariation);
+        this(content, contentId, contentType, keywordsId, keywordsText, matchText, true);
         this.keywordsVariation = keywordsVariation;
         this.matchVariation = matchVariation;
     }

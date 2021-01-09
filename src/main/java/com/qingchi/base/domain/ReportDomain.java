@@ -9,6 +9,7 @@ import com.qingchi.base.model.BaseModelDO;
 import com.qingchi.base.model.report.ReportAddVO;
 import com.qingchi.base.model.report.ReportDO;
 import com.qingchi.base.model.report.ReportDetailDO;
+import com.qingchi.base.model.system.KeywordsDO;
 import com.qingchi.base.model.system.KeywordsTriggerDetailDO;
 import com.qingchi.base.model.user.JusticeValueOrderDO;
 import com.qingchi.base.model.user.UserDO;
@@ -69,13 +70,13 @@ public class ReportDomain {
     @Transactional
     public void checkKeywordsCreateReport(BaseModelDO modelDO) throws IOException {
         //不为空才校验内容
-        if (StringUtils.isNotEmpty(modelDO.getContent())){
+        if (StringUtils.isNotEmpty(modelDO.getContent())) {
             //网易三方审查
 //            AntispamDO antispamDO = WangYiUtil.checkWYContentSecPost(modelDO);
 
             // 校验是否触发关键词
             List<KeywordsTriggerDetailDO> keywordsTriggers = keywordsTriggerService
-                    .checkContentTriggerKeywords(modelDO, modelDO.getReportContentType());
+                    .checkContentTriggerKeywords(modelDO, modelDO.getReportContentType(), AppConfigConst.getKeywordDOs());
 
 //            if (!CollectionUtils.isEmpty(keywordsTriggers) || antispamDO.hasViolate()) {
             //如果触发了关键词
@@ -86,8 +87,8 @@ public class ReportDomain {
                     reportCause = antispamDO.getCause();
                     reportDO = reportFactory.createReportDO(reportCause, modelDO, ReportSourceType.antispam, antispamDO.getId());
                 } else {*/
-                    reportCause = "系统自动审查";
-                    reportDO = reportFactory.createReportDO(reportCause, modelDO, ReportSourceType.systemAutoCheck);
+                reportCause = "系统自动审查";
+                reportDO = reportFactory.createReportDO(reportCause, modelDO, ReportSourceType.systemAutoCheck);
 //                }
 
                 //这里之后才能校验

@@ -1,6 +1,7 @@
 package com.qingchi.base.model.system;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.github.promeg.pinyinhelper.Pinyin;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -44,6 +45,11 @@ public class KeywordsDO {
     private String cause;
 
     private String deleteCause;
+    private String reopenCause;
+    private String closeTextCause;
+    private String reopenTextCause;
+    private String closeVariationCause;
+    private String reopenVariationCause;
 
     @Column(columnDefinition = "int default 0")
     private Integer totalNum;
@@ -79,5 +85,37 @@ public class KeywordsDO {
     @Column(columnDefinition = "double default 0")
     private Double variationNormalRatio;
 
+    //do必须有空的构造函数
+    public KeywordsDO() {}
 
+    public KeywordsDO(String content) {
+        this.setTextShow(content);
+        this.setText(content.toUpperCase());
+
+        String contentVariation = Pinyin.toPinyin(content, " ");
+        this.setVariationTextShow(contentVariation);
+        this.setVariationText(contentVariation.replaceAll(" ", "").toUpperCase());
+        this.setCause(cause);
+
+        this.setOpenText(true);
+        this.setOpenVariation(true);
+
+        this.setTotalNum(0);
+        this.setNormalNum(0);
+        this.setNormalRatio(0.0);
+        this.setViolateRatio(0.0);
+        this.setViolateNum(0);
+
+        this.setTextTotalNum(0);
+        this.setTextNormalNum(0);
+        this.setTextNormalRatio(0.0);
+        this.setTextViolateRatio(0.0);
+        this.setTextViolateNum(0);
+
+        this.setVariationTotalNum(0);
+        this.setVariationNormalNum(0);
+        this.setVariationNormalRatio(0.0);
+        this.setVariationViolateRatio(0.0);
+        this.setVariationViolateNum(0);
+    }
 }

@@ -27,7 +27,8 @@ public class KeywordsTriggerService {
 
     public List<KeywordsTriggerDetailDO> checkContentTriggerKeywords(
             BaseModelDO baseModelDO,
-            String contentType
+            String contentType,
+            List<KeywordsDO> keywordDOs
     ) {
 
         List<KeywordsTriggerDetailDO> keywordsTriggers = new ArrayList<>();
@@ -65,7 +66,6 @@ public class KeywordsTriggerService {
                     //记录自己这个字在拼音中的结束位置
                     contentWordIndexList.add(sum);
                 }
-                List<KeywordsDO> keywordDOs = AppConfigConst.keywordDOs;
                 //遍历关键词
                 for (KeywordsDO keywordsDO : keywordDOs) {
                     //这部分可以优化，不为文字以后才弄拼音
@@ -105,7 +105,6 @@ public class KeywordsTriggerService {
                                 modifyReportStatusFlag = true;
                                 //得到拼音的变种
                                 keywordsTriggerDetailDO = getKeywordsTriggerDetailDO(baseModelContent, baseModelId, contentType, matchContentLength, contentFormat, contentVariation, contentWordIndexList, keywordsDO);
-
                             }
                         }
 
@@ -120,6 +119,7 @@ public class KeywordsTriggerService {
         return keywordsTriggers;
     }
 
+    //变种匹配构建
     private KeywordsTriggerDetailDO getKeywordsTriggerDetailDO(
             String baseModelContent,
             Integer baseModelId,
@@ -155,6 +155,7 @@ public class KeywordsTriggerService {
             //存储主要变种内容
             String matchVariation = StringUtils.substring(contentVariation, subStartVariationIndex, subStartVariationIndex + matchContentLength * 3);
 
+            //变种匹配构建
             keywordsTriggerDetailDO = new KeywordsTriggerDetailDO(
                     baseModelContent,
                     baseModelId,
@@ -162,7 +163,6 @@ public class KeywordsTriggerService {
                     wordDO.getId(),
                     wordDO.getTextShow(),
                     matchText,
-                    false,
                     wordDO.getVariationText(),
                     matchVariation
             );

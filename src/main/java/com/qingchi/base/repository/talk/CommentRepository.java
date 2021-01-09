@@ -3,9 +3,12 @@ package com.qingchi.base.repository.talk;
 import com.qingchi.base.constant.CommonStatus;
 import com.qingchi.base.model.BaseModelDO;
 import com.qingchi.base.model.talk.CommentDO;
+import com.qingchi.base.model.talk.TalkDO;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -79,4 +82,8 @@ public interface CommentRepository extends JpaRepository<CommentDO, Integer> {
 
 
     List<CommentDO> findByParentCommentId(Integer commentId);
+
+
+    //查询关键词触发次数时使用
+    Page<CommentDO> findByStatusNotInOrderByIdDesc(Pageable pageable, List<String> status);
 }

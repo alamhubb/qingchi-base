@@ -23,6 +23,7 @@ public class ReportDetailDO {
     private Integer id;
 
     private Integer userId;
+    //应该就是contentId
     private Integer modelId;
 
     private Integer receiveUserId;

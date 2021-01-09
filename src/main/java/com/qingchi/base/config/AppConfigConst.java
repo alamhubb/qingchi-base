@@ -105,11 +105,15 @@ public class AppConfigConst {
     //1171970219 用户要求此qq加入违禁词
     private static List<IllegalWordDO> illegals = new ArrayList<>();
 
-    public static List<KeywordsDO> keywordDOs = new ArrayList<>();
+    private static List<KeywordsDO> keywordDOs = new ArrayList<>();
 
     public static void setKeywordDOs(List<KeywordsDO> keywordDOs) {
         AppConfigConst.keywordDOs = keywordDOs;
         QingLogger.logger.info("更新违禁词，违禁词数量：" + AppConfigConst.keywordDOs.size());
+    }
+
+    public static List<KeywordsDO> getKeywordDOs() {
+        return AppConfigConst.keywordDOs;
     }
 
     public static void setIllegals(List<IllegalWordDO> illegals) {
