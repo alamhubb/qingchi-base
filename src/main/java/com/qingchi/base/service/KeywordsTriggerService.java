@@ -84,7 +84,7 @@ public class KeywordsTriggerService {
                             String matchText = StringUtils.substring(contentFormat, subStartIndex, subStartIndex + matchContentLength);
 
                             //如果文本不违规次数小于20，或者 违规率大于0.3
-                            if (keywordsDO.getTextNormalNum() < 20 || keywordsDO.getTextViolateRatio() > 0.3) {
+                            if (keywordsDO.getTextNormalNum() < 20 || keywordsDO.getTextViolateRatio() > 0.2) {
                                 modifyReportStatusFlag = true;
                                 //reportstatus因为会有两种状态初始审查，是初始，预审核，
                                 keywordsTriggerDetailDO = new KeywordsTriggerDetailDO(
