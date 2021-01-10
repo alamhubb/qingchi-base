@@ -57,6 +57,7 @@ public class CommonStatus {
     //只要是举报为审核中的所有都能查出来
     public static final List<String> contentAuditStatus = Arrays.asList(ContentStatus.enable, ContentStatus.preAudit, ContentStatus.audit, ContentStatus.delete);
 
+    //todo 这个状态有问题，看引用
     public static final List<String> auditStatus = Arrays.asList(ContentStatus.preAudit, ContentStatus.audit);
     //可以发布内容的状态
 }
