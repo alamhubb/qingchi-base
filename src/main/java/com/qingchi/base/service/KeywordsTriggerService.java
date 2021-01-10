@@ -176,13 +176,17 @@ public class KeywordsTriggerService {
                         //如果打开了关键词打开了文本匹配，且文本包含关键词主体
                         if (keywordsDO.getOpenText() && contentFormat.contains(keywordsText)) {
                             //如果关键词是5，特殊处理
+                            //这段逻辑主要是，
+                            //满足黑名单直接为违规
+                            //满足白名单直接不违规
+                            //如果不是全为5的数字组合，不违规，跳出
                             if (keywordsText.equals("5")) {
                                 //黑名单
                                 //一层，判断为违规， 不5的，拒污的 5不5 不5的 不拒5 特别5 不拒绝5
                                 //白名单
                                 //二层不违规 不5，拒5，别5, 5别，绝5, 5的别，不要5 5🉐别，5的别，5得别, 5kg, 5斤，5岁，5公斤
 
-                                List<String> blacklist = Arrays.asList("不5的", "拒污的", "5不5", "不5的", "特别5", "不拒绝5");
+                                List<String> blacklist = Arrays.asList("不5的", "拒5的", "5不5", "不拒5", "特别5", "不拒绝5");
                                 List<String> whitelist = Arrays.asList("不5", "拒5", "别5", "绝5", "5的别", "不要5", "5🉐别", "5的别"
                                         , "5得别", "5kg", "5斤", "5岁", "5公斤");
 
@@ -194,6 +198,7 @@ public class KeywordsTriggerService {
                                     if (contentFormat.contains(s)) {
                                         //设置为违规
                                         isViolate = true;
+                                        break;
                                     }
                                 }
                                 //不违规
@@ -205,6 +210,7 @@ public class KeywordsTriggerService {
                                         if (contentFormat.contains(s)) {
                                             //
                                             isViolate = false;
+                                            break;
                                         }
                                     }
                                     //违规
