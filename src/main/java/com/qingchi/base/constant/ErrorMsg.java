@@ -29,6 +29,6 @@ public class ErrorMsg {
 
     public static final String reportSubmitHide = "内容进入审核，暂时隐藏，" + reportSubmit;
 
-    public static final String userMaybeViolation = "用户疑似存在违规行为，暂时被限制相关操作，情耐性等待审核结束" + CONTACT_SERVICE;
+    public static final String userMaybeViolation = "用户疑似存在违规行为，暂时被限制相关操作，请耐性等待审核结束" + CONTACT_SERVICE;
     public static final String bindPhoneNumCan = "请绑定手机号后再进行操作";
 }

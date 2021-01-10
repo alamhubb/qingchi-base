@@ -1,6 +1,7 @@
 package com.qingchi.base.entity;
 
 import com.qingchi.base.constant.CommonStatus;
+import com.qingchi.base.constant.status.ContentStatus;
 import com.qingchi.base.model.talk.CommentDO;
 import com.qingchi.base.repository.talk.CommentRepository;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,6 @@ public class CommentUtils {
     }
 
     public static List<CommentDO> getAll(Integer talkId) {
-        return commentRepository.findTop50ByTalkIdAndStatusInAndParentCommentIdIsNullOrderByUpdateTimeDesc(talkId, CommonStatus.selfCanSeeContentStatus);
+        return commentRepository.findTop50ByTalkIdAndStatusInAndParentCommentIdIsNullOrderByUpdateTimeDesc(talkId, ContentStatus.selfCanSeeContentStatus);
     }
 }

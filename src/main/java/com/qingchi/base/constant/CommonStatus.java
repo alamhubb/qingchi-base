@@ -18,11 +18,11 @@ public class CommonStatus {
     public static final String success = "成功";//初始
     public static final String fail = "失败";//初始
     public static final String init = "初始";//初始
-   /* public static final String preAudit = "预审核";//待审核
-    public static final String audit = "审核中";//待审核
-    public static final String enable = "正常";//启用
-    public static final String delete = "已删除";//删除
-    public static final String violation = "违规";//违规*/
+    /* public static final String preAudit = "预审核";//待审核
+     public static final String audit = "审核中";//待审核
+     public static final String enable = "正常";//启用
+     public static final String delete = "已删除";//删除
+     public static final String violation = "违规";//违规*/
     public static final String authFail = "认证失败";//删除
     // 忘记了为什么要设置一个不违规状态，1，会扩大职责范围，而，2.存在审核错了，还可以让其他人举报，净化环境
     // 目前已知优点，能方便发现是审核过的不违规状态
@@ -33,7 +33,7 @@ public class CommonStatus {
     public static final String destroy = "注销";//失效
 
     //message特有
-    public static final String withdraw  = "已撤回";//失效
+    public static final String withdraw = "已撤回";//失效
 
     //chat特有
 
@@ -52,17 +52,12 @@ public class CommonStatus {
 
     //阅读状态
     public static final String unread = "未读";//已读
-    //他人可见
-    public static final List<String> otherCanSeeContentStatus = Collections.singletonList(ContentStatus.enable);
 
-    //自己可见，自己能比别人多看见预审核状态的信息
-    public static final List<String> selfCanSeeContentStatus = Arrays.asList(ContentStatus.enable, ContentStatus.preAudit);
 
     //只要是举报为审核中的所有都能查出来
     public static final List<String> contentAuditStatus = Arrays.asList(ContentStatus.enable, ContentStatus.preAudit, ContentStatus.audit, ContentStatus.delete);
 
     public static final List<String> auditStatus = Arrays.asList(ContentStatus.preAudit, ContentStatus.audit);
     //可以发布内容的状态
-    public static final List<String> canPublishContentStatus = Arrays.asList(ContentStatus.preAudit, ContentStatus.enable);
 }
 

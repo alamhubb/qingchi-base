@@ -17,7 +17,6 @@ public class ContentStatus extends BaseStatus {
     //审核中
     public static final String audit = ConstStatus.audit;
 
-
     //违规
     public static final String violation = ConstStatus.violation;
 
