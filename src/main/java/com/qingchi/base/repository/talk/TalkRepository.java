@@ -114,6 +114,8 @@ public interface TalkRepository extends JpaRepository<TalkDO, Integer> {
     //查询关键词触发次数时使用
     Page<TalkDO> findByStatusNotInOrderByIdDesc(Pageable pageable, List<String> status);
 
+    Page<TalkDO> findByStatusNotInAndContentLikeOrderByIdDesc(Pageable pageable, List<String> status, String content);
+
     List<TalkDO> findTop20ByUserIdOrderByIdDesc(Integer userId);
 
     //弃用的*************************************************************************************

@@ -26,6 +26,8 @@ public class ContentStatus extends BaseStatus {
     //自己可见，自己能比别人多看见预审核状态的信息
     public static final List<String> selfCanSeeContentStatus = Arrays.asList(ContentStatus.enable, ContentStatus.preAudit);
 
+    //查询 不为审核中的内容
+    public static final List<String> auditStatus = Arrays.asList(ContentStatus.preAudit, ContentStatus.audit);
    /* //启用
     public static final String normal = "正常";
     //删除

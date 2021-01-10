@@ -79,7 +79,7 @@ public class ReportDomain {
 
             // 校验是否触发关键词
             List<KeywordsTriggerDetailDO> keywordsTriggers = keywordsTriggerService
-                    .checkContentTriggerKeywords(modelDO, modelDO.getReportContentType(), AppConfigConst.getKeywordDOs());
+                    .checkContentTriggerKeywords(modelDO, modelDO.getReportContentType(), AppConfigConst.getKeywordDOs(), false);
 
 //            if (!CollectionUtils.isEmpty(keywordsTriggers) || antispamDO.hasViolate()) {
             //如果触发了关键词
