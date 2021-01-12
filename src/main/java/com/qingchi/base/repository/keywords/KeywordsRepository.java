@@ -15,13 +15,17 @@ public interface KeywordsRepository extends JpaRepository<KeywordsDO, Integer> {
     Optional<KeywordsDO> findTopOneByText(String word);
 
     List<KeywordsDO> findAllByStatusIsNull();
+    List<KeywordsDO> findAllByStatus(String status);
 
     //状态启用的，且文本违规率大于的，且开启了文本的
     List<KeywordsDO> findAllByStatusIsNullAndTextViolateRatioGreaterThanAndOpenTextTrue(Double violateRatio);
 
     List<KeywordsDO> findAllByStatusIsNullAndTotalNumGreaterThanOrderByTextViolateRatioDesc(Integer num);
 
-    List<KeywordsDO> findTop100ByStatusIsNullOrderByViolateNumDesc();
+    //后台管理，查询关键词列表，按文本违规排序
+    List<KeywordsDO> findAllByStatusOrderByTextViolateRatioDesc(String status);
+
+//    List<KeywordsDO> findTop100ByStatusIsNullOrderByViolateNumDesc();
 
     List<KeywordsDO> findTop100ByStatusIsNullOrderByTotalNumDesc();
 

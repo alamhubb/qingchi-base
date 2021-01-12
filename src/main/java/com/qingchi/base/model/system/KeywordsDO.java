@@ -2,10 +2,12 @@ package com.qingchi.base.model.system;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.github.promeg.pinyinhelper.Pinyin;
+import com.qingchi.base.constant.status.BaseStatus;
 import lombok.Data;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -85,11 +87,16 @@ public class KeywordsDO {
     @Column(columnDefinition = "double default 0")
     private Double pinyinNormalRatio;
 
+    private Date createTime;
+    private Date updateTime;
+
     //do必须有空的构造函数
     public KeywordsDO() {
     }
 
     public KeywordsDO(String content, String cause) {
+        this.setStatus(BaseStatus.enable);
+
         this.setTextShow(content);
         this.setText(content.toUpperCase());
 
@@ -99,8 +106,13 @@ public class KeywordsDO {
 
         this.setCause(cause);
 
+        Date date = new Date();
+        this.setCreateTime(date);
+        this.setUpdateTime(date);
+
         this.setOpenText(true);
-        this.setOpenPinyin(true);
+        //默认不开启拼音
+        this.setOpenPinyin(false);
 
         this.setTotalNum(0);
         this.setNormalNum(0);

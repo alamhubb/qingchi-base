@@ -44,7 +44,7 @@ public class ViolationKeywordsService {
         List<IllegalWordDO> illegalWordDOS = illegalWordRepository.findAllByStatus(BaseStatus.enable);
         AppConfigConst.setIllegals(illegalWordDOS);
 
-        List<KeywordsDO> keywordsDOS= keywordsRepository.findAllByStatusIsNull();
+        List<KeywordsDO> keywordsDOS= keywordsRepository.findAllByStatus(BaseStatus.enable);
         AppConfigConst.setKeywordDOs(keywordsDOS);
         //目前不需要全部检索然后删除了，已经使用了举报机制
         /*for (String illegal : illegals) {
