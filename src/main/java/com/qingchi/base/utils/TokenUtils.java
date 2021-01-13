@@ -54,7 +54,7 @@ public class TokenUtils {
 
     //使用websocket时无法获取request必须传入token
     public static String getIdByToken(String token) {
-        if (StringUtils.isNotEmpty(token)) {
+        if (TokenUtils.isCorrect(token)) {
             try {
                 return Jwts.parser().setSigningKey(tokenKey).parseClaimsJws(token).getBody().getSubject().split("_")[0];
             } catch (MalformedJwtException e) {
@@ -68,6 +68,7 @@ public class TokenUtils {
     public static boolean isCorrect(String token) {
         return StringUtils.isNotEmpty(token)
                 && !"undefined".equals(token)
+                && !"null".equals(token)
 //                && !"\"[object Null]\"".equals(token)
                 && !"[object Null]".equals(token)
                 && token.length() != 32;
