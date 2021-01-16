@@ -12,6 +12,7 @@ import lombok.Data;
 public class LoginDataVO {
     //qq、wx、phone,前台叫provider
     private String loginType;
+    //todo，provider plateform好像还是有点乱，需要确认，涉及到数据库用户信息和常量类型
     private String provider;
     //h5、mp、app//先判断平台，然后判断provider
     private String platform;
@@ -22,6 +23,7 @@ public class LoginDataVO {
     private String code;
     private String openId;
     private String unionId;
+    //app端登陆才有
     private String clientid;
 
     private String nickName;

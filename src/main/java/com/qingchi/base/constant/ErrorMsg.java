@@ -5,6 +5,7 @@ import com.qingchi.base.config.AppConfigConst;
 
 public class ErrorMsg {
     //内容违规错误信息
+    public static final String User_not_null = "用户数据不能为空";
     public static final String CONTENT_VIOLATION = "内容违规";
     public static final String report_success_result = "举报成功";
     public static final String report_fail_result = "举报失败";
