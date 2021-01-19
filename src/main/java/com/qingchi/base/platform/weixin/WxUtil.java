@@ -1,6 +1,7 @@
 package com.qingchi.base.platform.weixin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.qingchi.base.constant.CommonConst;
 import com.qingchi.base.constant.PlatformType;
 import com.qingchi.base.constant.WxErrCode;
 import com.qingchi.base.model.notify.NotifyDO;
@@ -9,6 +10,7 @@ import com.qingchi.base.platform.PushMsgDTO;
 import com.qingchi.base.platform.TokenDTO;
 import com.qingchi.base.platform.qq.QQPayResult;
 import com.qingchi.base.model.account.AccountDO;
+import com.qingchi.base.platform.weixin.token.WxTokenResult;
 import com.qingchi.base.repository.user.AccountRepository;
 import com.qingchi.base.utils.QingLogger;
 import com.qingchi.base.utils.TokenUtils;
@@ -60,19 +62,72 @@ public class WxUtil {
     }
 
 
+    private static String wx_mp_id;
+    private static String wx_app_id;
+    private static String wx_mp_secret;
+
+
+    @Value("${config.wx.mp.wx_mp_id}")
+    public void setWx_mp_id(String wx_mp_id) {
+        WxUtil.wx_mp_id = wx_mp_id;
+    }
+
+    @Value("${config.wx.app.wx_app_id}")
+    public void setWx_app_id(String wx_app_id) {
+        WxUtil.wx_app_id = wx_app_id;
+    }
+
+    @Value("${config.wx.mp.wx_mp_secret}")
+    public void setWx_mp_secret(String wx_mp_secret) {
+        WxUtil.wx_mp_secret = wx_mp_secret;
+    }
+
+    /**
+     * 获取微信token
+     *
+     * @return
+     */
+    /*public static String getAccessToken() {
+        ResponseEntity<TokenDTO> responseEntity = restTemplate.getForEntity(tokenUrl + "getWxSession", TokenDTO.class);
+        return Objects.requireNonNull(responseEntity.getBody()).getAccessToken();
+    }*/
+
     /**
      * 获取微信token
      *
      * @return
      */
     public static String getAccessToken() {
-        ResponseEntity<TokenDTO> responseEntity = restTemplate.getForEntity(tokenUrl + "getWxSession", TokenDTO.class);
-        return Objects.requireNonNull(responseEntity.getBody()).getAccessToken();
+        WxTokenResult wxToken = WxConst.getWxToken();
+        if (wxToken.tokenIsValid()) {
+            return wxToken.getAccess_token();
+        }
+        return refreshAccessToken();
     }
 
-    public static String refreshAccessToken() {
+    /*public static String refreshAccessToken() {
         ResponseEntity<TokenDTO> responseEntity = restTemplate.getForEntity(tokenUrl + "refreshWxSession", TokenDTO.class);
         return Objects.requireNonNull(responseEntity.getBody()).getAccessToken();
+    }*/
+
+
+    public static String refreshAccessToken() {
+        String appIDAndAppSecret = "appid=" + wx_app_id + "&secret=" + wx_mp_secret;
+        String url = WxConst.wxTokenUrl + appIDAndAppSecret;
+        Date curDate = new Date();
+        QingLogger.logger.info("从微信获取认证信息:{}", url);
+        ResponseEntity<WxTokenResult> responseEntity = restTemplate.getForEntity(url, WxTokenResult.class);
+        WxTokenResult wxToken = responseEntity.getBody();
+        if (wxToken == null || wxToken.hasError()) {
+            QingLogger.logger.info("获取微信认证信息失败:{}", wxToken);
+            return null;
+        }
+        wxToken.setCreateTime(curDate);
+        //当前时间加上过期时间 ，减去5分钟余量
+        wxToken.setExpiresTime(new Date(curDate.getTime() + wxToken.getExpires_in() * CommonConst.second - 5 * CommonConst.minute));
+        QingLogger.logger.info("获取微信认证信息成功:{}", wxToken);
+        WxConst.setWxToken(wxToken);
+        return wxToken.getAccess_token();
     }
 
     /**
@@ -108,19 +163,6 @@ public class WxUtil {
         String url = WxConst.push_msg_url + accessToken;
         HttpResult result = restTemplate.postForEntity(url, pushMsgDTO, HttpResult.class).getBody();
         PushMessageUtils.savePushMsg(notify, pushMsgDTO, result, platform);
-    }
-
-    private static String wx_mp_id;
-    private static String wx_app_id;
-
-    @Value("${config.wx.mp.wx_mp_id}")
-    public void setWx_mp_id(String wx_mp_id) {
-        WxUtil.wx_mp_id = wx_mp_id;
-    }
-
-    @Value("${config.wx.app.wx_app_id}")
-    public void setWx_app_id(String wx_app_id) {
-        WxUtil.wx_app_id = wx_app_id;
     }
 
     private static String wx_merchant_id;

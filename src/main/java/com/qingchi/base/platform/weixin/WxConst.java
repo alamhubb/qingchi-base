@@ -1,5 +1,7 @@
 package com.qingchi.base.platform.weixin;
 
+import com.qingchi.base.platform.weixin.token.WxTokenResult;
+
 /**
  * @author qinkaiyuan
  * @date 2019-06-22 22:23
@@ -13,6 +15,9 @@ public class WxConst {
     public static final String mp_pay_trade_type = "JSAPI";
     public static final String app_pay_trade_type = "APP";
 
+    private static WxTokenResult wxToken = new WxTokenResult();
+
+    public static String wxTokenUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&";
 
     public static String wxLoginUrl = "https://api.weixin.qq.com/sns/jscode2session?";
     public static String wx_msg_sec_check_url = "https://api.weixin.qq.com/wxa/msg_sec_check?access_token=";
@@ -39,4 +44,12 @@ public class WxConst {
     public static String[] messageTemplateIds = {WxConst.violation_template_id};
     //用户举报人时，接收举报处理结果
     public static String[] reportTemplateIds = {report_result_template_id};
+
+    public static WxTokenResult getWxToken() {
+        return wxToken;
+    }
+
+    public static void setWxToken(WxTokenResult wxToken) {
+        WxConst.wxToken = wxToken;
+    }
 }
