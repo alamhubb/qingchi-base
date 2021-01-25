@@ -1,7 +1,6 @@
 package com.qingchi.base.service;
 
 import com.qingchi.base.config.AppConfigConst;
-import com.qingchi.base.constant.CommonStatus;
 import com.qingchi.base.constant.ReportSourceType;
 import com.qingchi.base.constant.status.ReportStatus;
 import com.qingchi.base.entity.ReportDetailUtils;
@@ -109,7 +108,7 @@ public class ReportService {
                     }
                 } else {
                     //如果今天已经成功举报了10个以上，则不再发放奖励
-                    reportDetailDO.setStatus(ReportStatus.noViolation);
+                    reportDetailDO.setStatus(ReportStatus.enable);
                     //错误的举报，user减分
                     justiceValueOrderDO.setJusticeValue(-AppConfigConst.reportErrorValue);
                     detailUser.setJusticeValue(detailUser.getJusticeValue() - AppConfigConst.reportErrorValue);

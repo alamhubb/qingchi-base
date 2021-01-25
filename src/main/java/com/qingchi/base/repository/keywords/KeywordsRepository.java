@@ -25,6 +25,9 @@ public interface KeywordsRepository extends JpaRepository<KeywordsDO, Integer> {
     //后台管理，查询关键词列表，按文本违规排序
     List<KeywordsDO> findAllByStatusOrderByTextViolateRatioDesc(String status);
 
+    //后台管理，查询关键词列表，按文本违规排序,开启，打开拼音，且拼音不违规大于19，且违规率小于40
+    List<KeywordsDO> findAllByStatusAndOpenPinyinIsTrueAndPinyinNormalNumGreaterThanAndPinyinViolateRatioLessThan(String status,Integer normalCount,Double violateRation);
+
 //    List<KeywordsDO> findTop100ByStatusIsNullOrderByViolateNumDesc();
 
     List<KeywordsDO> findTop100ByStatusIsNullOrderByTotalNumDesc();

@@ -37,6 +37,8 @@ public interface ReportRepository extends JpaRepository<ReportDO, Integer> {
 
     Page<ReportDO> findByStatusAndAuditTypeAndHasReviewFalseOrderByIdDesc(Pageable pageable, String status, String auditType);
 
+    Page<ReportDO> findByStatusNotInAndHasReviewFalseOrderByIdDesc(Pageable pageable, List<String> status);
+
     Page<ReportDO> findByStatusOrderByIdDesc(Pageable pageable, String status);
 
 }

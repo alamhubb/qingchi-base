@@ -4,7 +4,6 @@ import com.qingchi.base.constant.CommonStatus;
 import com.qingchi.base.constant.UserType;
 import com.qingchi.base.constant.ViolateLevel;
 import com.qingchi.base.constant.ViolateType;
-import com.qingchi.base.constant.status.BaseStatus;
 import com.qingchi.base.constant.status.ContentStatus;
 import com.qingchi.base.constant.status.ReportStatus;
 import com.qingchi.base.constant.status.UserStatus;
@@ -80,7 +79,7 @@ public class ViolationService {
         reportDO.setAuditType(ViolateType.noViolation);
         reportDO.setAuditNote(auditNote);
         //审核状态变更
-        reportDO.setStatus(ReportStatus.noViolation);
+        reportDO.setStatus(ReportStatus.enable);
         reportDO.setUpdateTime(curDate);
         reportDO.setValid(false);
         //发放奖励和修改举报详情内容
