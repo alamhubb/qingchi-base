@@ -28,6 +28,6 @@ public class ConstStatus {
     public static final String violation = "违规";
 
     //不违规
-    public static final String noViolation = "不违规";
+//    public static final String noViolation = "不违规";
 }
 
