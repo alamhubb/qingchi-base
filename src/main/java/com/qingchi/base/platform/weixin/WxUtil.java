@@ -66,17 +66,15 @@ public class WxUtil {
     private static String wx_app_id;
     private static String wx_mp_secret;
 
-
-    @Value("${config.wx.mp.wx_mp_id}")
-    public void setWx_mp_id(String wx_mp_id) {
-        WxUtil.wx_mp_id = wx_mp_id;
-    }
-
     @Value("${config.wx.app.wx_app_id}")
     public void setWx_app_id(String wx_app_id) {
         WxUtil.wx_app_id = wx_app_id;
     }
 
+    @Value("${config.wx.mp.wx_mp_id}")
+    public void setWx_mp_id(String wx_mp_id) {
+        WxUtil.wx_mp_id = wx_mp_id;
+    }
     @Value("${config.wx.mp.wx_mp_secret}")
     public void setWx_mp_secret(String wx_mp_secret) {
         WxUtil.wx_mp_secret = wx_mp_secret;
@@ -112,7 +110,7 @@ public class WxUtil {
 
 
     public static String refreshAccessToken() {
-        String appIDAndAppSecret = "appid=" + wx_app_id + "&secret=" + wx_mp_secret;
+        String appIDAndAppSecret = "appid=" + wx_mp_id + "&secret=" + wx_mp_secret;
         String url = WxConst.wxTokenUrl + appIDAndAppSecret;
         Date curDate = new Date();
         QingLogger.logger.info("从微信获取认证信息:{}", url);
