@@ -3,6 +3,7 @@ package com.qingchi.base.repository.user;
 import com.qingchi.base.model.user.UserImgDO;
 import com.qingchi.base.model.BaseModelDO;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -14,7 +15,7 @@ public interface UserImgRepository extends JpaRepository<UserImgDO, Integer> {
     @Cacheable(cacheNames = "getUserImgByUserId", key = "#userId")
     List<UserImgDO> findTop3ByUserIdAndStatusInOrderByCreateTimeDesc(Integer userId, List<String> status);
 
-    @CacheEvict(cacheNames = "getUserImgByUserId", key = "#userImgDO.userId")
+    @CachePut(cacheNames = "getUserImgByUserId", key = "#userImgDO.userId")
     UserImgDO save(UserImgDO userImgDO);
 
     Optional<BaseModelDO> findOneByIdAndStatus(Integer id, String status);

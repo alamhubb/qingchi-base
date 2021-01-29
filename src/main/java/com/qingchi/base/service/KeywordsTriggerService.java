@@ -2,15 +2,20 @@ package com.qingchi.base.service;
 
 import com.github.promeg.pinyinhelper.Pinyin;
 import com.qingchi.base.config.AppConfigConst;
+import com.qingchi.base.constant.CustomWordsRuleType;
+import com.qingchi.base.constant.ErrorMsg;
+import com.qingchi.base.constant.status.BaseStatus;
 import com.qingchi.base.model.BaseModelDO;
-import com.qingchi.base.model.system.KeywordsCopyDO;
-import com.qingchi.base.model.system.KeywordsDO;
-import com.qingchi.base.model.system.KeywordsTriggerDetailDO;
+import com.qingchi.base.model.system.*;
+import com.qingchi.base.repository.keywords.BlackKeywordsRepository;
+import com.qingchi.base.repository.keywords.CustomKeywordsRepository;
+import com.qingchi.base.repository.keywords.WhiteKeywordsRepository;
 import com.qingchi.base.utils.KeywordsUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -180,71 +185,7 @@ public class KeywordsTriggerService {
                             //满足黑名单直接为违规
                             //满足白名单直接不违规
                             //如果不是全为5的数字组合，不违规，跳出
-                            if (keywordsText.equals("5")) {
-                                //黑名单
-                                //一层，判断为违规， 不5的，拒污的 5不5 不5的 不拒5 特别5 不拒绝5
-                                //白名单
-                                //二层不违规 不5，拒5，别5, 5别，绝5, 5的别，不要5 5🉐别，5的别，5得别, 5kg, 5斤，5岁，5公斤
-
-                                List<String> blacklist = Arrays.asList("不5的", "拒5的", "5不5", "不拒5", "特别5", "不拒绝5");
-                                List<String> whitelist = Arrays.asList("不5", "拒5", "别5", "绝5", "5的别", "不要5", "5🉐别", "5的别"
-                                        , "5得别", "5kg", "5斤", "5岁", "5公斤");
-
-                                boolean isViolate = false;
-
-                                //一层 包含黑名单违规
-                                for (String s : blacklist) {
-                                    //包含黑名单违规
-                                    if (contentFormat.contains(s)) {
-                                        //设置为违规
-                                        isViolate = true;
-                                        break;
-                                    }
-                                }
-                                //不违规
-                                if (!isViolate) {
-                                    isViolate = true;
-                                    //二层 包含白名单不违规
-                                    for (String s : whitelist) {
-                                        //包含白名单不违规
-                                        if (contentFormat.contains(s)) {
-                                            //
-                                            isViolate = false;
-                                            break;
-                                        }
-                                    }
-                                    //违规
-                                    if (isViolate) {
-                                        isViolate = false;
-                                        // 数字串集合，获取数字集合
-                                        String numAryReg = "\\d+";
-                                        //如果字符串长度大于1，如果只有一个5，想不到什么情况只有一个5，所以先忽略这个逻辑
-                                        List<String> numAry = getMatchers(numAryReg, contentFormat);
-                                        //判断是否包含非5数字
-                                        //取非判断是否全是5
-                                        String hasNot5Reg = ".*[^5]+.*";
-                                        Pattern pattern = Pattern.compile(hasNot5Reg);
-                                        //是否包含非5
-                                        for (String text1 : numAry) {
-                                            Matcher matcher = pattern.matcher(text1);
-                                            boolean all5 = !matcher.matches();
-                                            //全是5， 违规
-                                            if (all5) {
-                                                isViolate = true;
-                                                break;
-                                            }
-                                        }
-                                        //如果不包含全是5，则不违规，则进入下次
-                                        if (!isViolate) {
-                                            continue;
-                                        }
-                                    } else {
-                                        //不违规，不往下走，执行下次循环
-                                        continue;
-                                    }
-                                }
-                                //违规
-                            }
+                            if (checkCustomKeywords(contentFormat, keywordsText)) continue;
                             //截取主要违规内容
                             int subStartIndex = contentFormat.indexOf(keywordsText);
 
@@ -287,6 +228,114 @@ public class KeywordsTriggerService {
         return keywordsTriggers;
     }
 
+    @Resource
+    CustomKeywordsRepository customKeywordsRepository;
+    @Resource
+    BlackKeywordsRepository blackKeywordsRepository;
+    @Resource
+    WhiteKeywordsRepository whiteKeywordsRepository;
+
+    //是否包含违规自定义关键词
+    private boolean checkCustomKeywords(String contentFormat, String keywordsText) {
+        List<CustomKeywordsDO> customKeywordsDOS = customKeywordsRepository.findAllByStatus(BaseStatus.enable);
+        for (CustomKeywordsDO customKeywordsDO : customKeywordsDOS) {
+            //转大写
+            String customKeywords = customKeywordsDO.getWord().toUpperCase();
+            //5,wu,w
+            if (keywordsText.equals(customKeywords)) {
+                //黑名单
+                //一层，判断为违规， 不5的，拒污的 5不5 不5的 不拒5 特别5 不拒绝5
+                //白名单
+                //二层不违规 不5，拒5，别5, 5别，绝5, 5的别，不要5 5🉐别，5的别，5得别, 5kg, 5斤，5岁，5公斤
+
+                //不{0}的
+                List<BlackKeywordsDO> blackKeywordsDOS = blackKeywordsRepository.findAllByStatus(BaseStatus.enable);
+//                List<String> blacklist = Arrays.asList("不5的", "拒5的", "5不5", "不拒5", "特别5", "不拒绝{0}");
+
+                boolean isViolate = false;
+
+                //一层 包含黑名单违规
+                for (BlackKeywordsDO blackKeywordsDO : blackKeywordsDOS) {
+                    //包含黑名单违规, 黑名单+自定义，组合出关键词组合
+                    if (contentFormat.contains(MessageFormat.format(blackKeywordsDO.getWord(), customKeywords))) {
+                        //设置为违规
+                        isViolate = true;
+                        blackKeywordsDO.setTriggerCount(blackKeywordsDO.getTriggerCount() + 1);
+                        blackKeywordsRepository.save(blackKeywordsDO);
+                        break;
+                    }
+
+                }
+                /*for (String s : blacklist) {
+                    //包含黑名单违规
+                    if (contentFormat.contains(s)) {
+                        //设置为违规
+                        isViolate = true;
+                        break;
+                    }
+                }*/
+
+                List<String> whitelist = Arrays.asList("不{0}", "拒{0}", "别{0}", "绝{0}", "{0}的别", "不要{0}", "{0}🉐别", "{0}的别"
+                        , "{0}得别", "{0}kg", "{0}斤", "{0}岁", "{0}公斤");
+
+                List<WhiteKeywordsDO> whiteKeywordsDOS = whiteKeywordsRepository.findAllByStatus(BaseStatus.enable);
+                //不违规
+                if (!isViolate) {
+                    isViolate = true;
+                    //二层 包含白名单不违规
+                    for (WhiteKeywordsDO whiteKeywordsDO : whiteKeywordsDOS) {
+                        //包含白名单不违规
+                        if (contentFormat.contains(MessageFormat.format(whiteKeywordsDO.getWord(), customKeywords))) {
+                            //设置为不违规
+                            isViolate = false;
+                            whiteKeywordsDO.setTriggerCount(whiteKeywordsDO.getTriggerCount() + 1);
+                            whiteKeywordsRepository.save(whiteKeywordsDO);
+                            break;
+                        }
+                    }
+
+                    //违规，不符合白名单才执行
+                    if (isViolate) {
+                        isViolate = false;
+                        //字母规则
+                        String numAryReg = "\\w+";
+                        if (CustomWordsRuleType.num.equals(customKeywordsDO.getRuleType())) {
+                            // 数字串集合，获取数字集合
+                            numAryReg = "\\d+";
+                        }
+                        //如果字符串长度大于1，如果只有一个5，想不到什么情况只有一个5，所以先忽略这个逻辑
+                        List<String> numAry = getMatchers(numAryReg, contentFormat);
+                        //判断是否包含非5数字
+                        //取非判断是否全是5
+                        String hasNot5Reg = ".*[^" + customKeywords + "]+.*";
+                        Pattern pattern = Pattern.compile(hasNot5Reg);
+                        //是否包含非5
+                        for (String text1 : numAry) {
+                            Matcher matcher = pattern.matcher(text1);
+                            boolean all5 = !matcher.matches();
+                            //全是5， 违规
+                            if (all5) {
+                                customKeywordsDO.setTriggerCount(customKeywordsDO.getTriggerCount() + 1);
+                                customKeywordsRepository.save(customKeywordsDO);
+                                isViolate = true;
+                                break;
+                            }
+                        }
+                        //如果不包含全是5，则不违规，则进入下次
+                        if (!isViolate) {
+                            return true;
+                        }
+                    } else {
+                        //不违规，不往下走，执行下次循环
+                        return true;
+                    }
+                }
+                //违规
+            }
+        }
+        return false;
+    }
+
     List<String> getMatchers(String regex, String source) {
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(source);
@@ -296,6 +345,60 @@ public class KeywordsTriggerService {
         }
         return list;
     }
+
+    //变种匹配构建
+    private KeywordsTriggerDetailDO getKeywordsTriggerDetailDO(
+            String baseModelContent,
+            Integer baseModelId,
+            String contentType,
+            int matchContentLength,
+            String contentFormat,
+            String contentPinyin,
+            List<Integer> contentWordIndexList,
+            KeywordsDO wordDO
+    ) {
+        String keywordsPinyin = wordDO.getPinyinText();
+
+        KeywordsTriggerDetailDO keywordsTriggerDetailDO = null;
+        //如果变种文本，包含变种关键词
+        if (contentPinyin.contains(keywordsPinyin)) {
+            //修改标识为触发
+            //获得变种关键词的位置
+            int subStartPinyinIndex = contentPinyin.indexOf(keywordsPinyin);
+
+            int subStartIndex = 0;
+            for (int j = 0; j < contentWordIndexList.size(); j++) {
+                Integer strIndex = contentWordIndexList.get(j);
+                //变种关键词位置，大于等于字体位置时，则为这个字体
+                if (strIndex > subStartPinyinIndex) {
+                    subStartIndex = j - 1;
+                    break;
+                }
+            }
+
+            //截取主要违规内容
+            String matchText = StringUtils.substring(contentFormat, subStartIndex, subStartIndex + matchContentLength);
+
+            //存储主要变种内容
+            String matchPinyin = StringUtils.substring(contentPinyin, subStartPinyinIndex, subStartPinyinIndex + matchContentLength * 3);
+
+            //变种匹配构建
+            keywordsTriggerDetailDO = new KeywordsTriggerDetailDO(
+                    baseModelContent,
+                    baseModelId,
+                    contentType,
+                    wordDO.getId(),
+                    wordDO.getTextShow(),
+                    matchText,
+                    wordDO.getPinyinText(),
+                    matchPinyin
+            );
+        }
+        return keywordsTriggerDetailDO;
+    }
+
+}
+
 /*
     //变种匹配构建
     private KeywordsTriggerDetailDO getKeywordsTriggerDetailDO(
@@ -349,54 +452,3 @@ public class KeywordsTriggerService {
     }
 */
 
-    //变种匹配构建
-    private KeywordsTriggerDetailDO getKeywordsTriggerDetailDO(
-            String baseModelContent,
-            Integer baseModelId,
-            String contentType,
-            int matchContentLength,
-            String contentFormat,
-            String contentPinyin,
-            List<Integer> contentWordIndexList,
-            KeywordsDO wordDO
-    ) {
-        String keywordsPinyin = wordDO.getPinyinText();
-
-        KeywordsTriggerDetailDO keywordsTriggerDetailDO = null;
-        //如果变种文本，包含变种关键词
-        if (contentPinyin.contains(keywordsPinyin)) {
-            //修改标识为触发
-            //获得变种关键词的位置
-            int subStartPinyinIndex = contentPinyin.indexOf(keywordsPinyin);
-
-            int subStartIndex = 0;
-            for (int j = 0; j < contentWordIndexList.size(); j++) {
-                Integer strIndex = contentWordIndexList.get(j);
-                //变种关键词位置，大于等于字体位置时，则为这个字体
-                if (strIndex > subStartPinyinIndex) {
-                    subStartIndex = j - 1;
-                    break;
-                }
-            }
-
-            //截取主要违规内容
-            String matchText = StringUtils.substring(contentFormat, subStartIndex, subStartIndex + matchContentLength);
-
-            //存储主要变种内容
-            String matchPinyin = StringUtils.substring(contentPinyin, subStartPinyinIndex, subStartPinyinIndex + matchContentLength * 3);
-
-            //变种匹配构建
-            keywordsTriggerDetailDO = new KeywordsTriggerDetailDO(
-                    baseModelContent,
-                    baseModelId,
-                    contentType,
-                    wordDO.getId(),
-                    wordDO.getTextShow(),
-                    matchText,
-                    wordDO.getPinyinText(),
-                    matchPinyin
-            );
-        }
-        return keywordsTriggerDetailDO;
-    }
-}

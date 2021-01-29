@@ -3,7 +3,7 @@ package com.qingchi.base.repository.user;
 import com.qingchi.base.config.redis.RedisKeysConst;
 import com.qingchi.base.model.user.UserDO;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<UserDO, Integer> {
-    @CacheEvict(cacheNames = RedisKeysConst.userById, key = "#user.id")
+    @CachePut(cacheNames = RedisKeysConst.userById, key = "#user.id")
     UserDO save(UserDO user);
 
     @Cacheable(cacheNames = RedisKeysConst.userById, key = "#id")

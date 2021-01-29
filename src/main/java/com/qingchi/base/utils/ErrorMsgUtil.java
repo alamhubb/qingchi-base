@@ -11,4 +11,8 @@ public class ErrorMsgUtil {
         Integer manyDay = DateUtils.HowManyDaysFromNow(date);
         return MessageFormat.format(ErrorMsg.errorCode605ContactServiceValue, manyDay);
     }
+
+    public static void main(String[] args) {
+        System.out.println(MessageFormat.format("{0}不{0}", 5));
+    }
 }

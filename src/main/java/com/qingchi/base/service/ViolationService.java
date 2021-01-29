@@ -123,7 +123,7 @@ public class ViolationService {
 
 
         //不是轻微违规，则将所有待审核内容改为违规
-        if (ViolateType.slightViolation.equals(violateType)) {
+        if (!ViolateType.slightViolation.equals(violateType)) {
             //查询用户所有为待审核和预审核的内容，改为违规
             List<ReportDO> reportDOS = reportStore.queryUserOtherWaitAuditContent(violationUser.getId());
             for (ReportDO linkReport : reportDOS) {
