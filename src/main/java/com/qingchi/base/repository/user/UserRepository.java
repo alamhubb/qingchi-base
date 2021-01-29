@@ -43,6 +43,9 @@ public interface UserRepository extends JpaRepository<UserDO, Integer> {
     @Query(value = "update UserDO u set u.status = :status where u.status = :vioStatus and u.violationEndTime <= :date")
     Integer updateUserVioStatus(@Param("status") String vioStatus, @Param("status") String status, @Param("date") Date date);
 
+    //查询违规，和封禁已过期的用户
+    List<UserDO> findByStatusAndViolationEndTimeBefore(String status, Date date);
+
 
     Optional<UserDO> findFirstByPhoneNumOrderByIdAsc(String phoneNum);
 

@@ -1,6 +1,7 @@
 package com.qingchi.base.constant;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -29,12 +30,20 @@ public class ViolateType {
     public final static String swindle = "欺骗诈骗";
     public final static String other = "其他违规";
 
+    //前台不展示，后台管理不展示，仅代码使用
+    public final static String otherIllegalLinkage = "其他违规关联违规";
+
+
     public final static List<String> violateTypes = Arrays.asList(pornInfo, sexy, slightViolation, unfriendly, badAd, userInfo, lawbreaking, swindle, other);
 
 
     public final static List<String> frontShowReportTypes = Arrays.asList(pornInfo, sexy, unfriendly, badAd, lawbreaking, other);
     public final static List<String> adminFrontShowReportTypes = Arrays.asList(pornInfo, sexy, slightViolation, unfriendly, badAd, lawbreaking, other);
 
+    //轻微违规
+    public final static List<String> slightViolationList = Collections.singletonList(slightViolation);
     //一般违规
     public final static List<String> generalViolationList = Arrays.asList(sexy, unfriendly, other);
+    //严重
+    public final static List<String> severelyViolationList = Arrays.asList(pornInfo, badAd, userInfo, lawbreaking, swindle);
 }

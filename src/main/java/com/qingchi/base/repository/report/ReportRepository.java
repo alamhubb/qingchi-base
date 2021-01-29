@@ -41,4 +41,7 @@ public interface ReportRepository extends JpaRepository<ReportDO, Integer> {
 
     Page<ReportDO> findByStatusOrderByIdDesc(Pageable pageable, String status);
 
+    //查询用户其他为审核中的状态
+    List<ReportDO> findByReceiveUserIdAndStatusIn(Integer userId,List<String> status);
+
 }

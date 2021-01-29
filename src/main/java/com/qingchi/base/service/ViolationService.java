@@ -16,6 +16,8 @@ import com.qingchi.base.repository.talk.CommentRepository;
 import com.qingchi.base.repository.talk.TalkRepository;
 import com.qingchi.base.repository.user.UserImgRepository;
 import com.qingchi.base.repository.user.UserRepository;
+import com.qingchi.base.store.ReportStore;
+import com.qingchi.base.utils.BaseModelUtils;
 import com.qingchi.base.utils.QingLogger;
 import com.qingchi.base.utils.UserUtils;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author qinkaiyuan
@@ -48,6 +51,8 @@ public class ViolationService {
     private KeywordsService keywordsService;
     @Resource
     private BaseModelService baseModelService;
+    @Resource
+    private ReportStore reportStore;
 
     public void noViolateService(BaseModelDO modelDO, String auditNote, ReportDO reportDO) {
         Date curDate = new Date();
@@ -82,6 +87,7 @@ public class ViolationService {
         reportDO.setStatus(ReportStatus.enable);
         reportDO.setUpdateTime(curDate);
         reportDO.setValid(false);
+        reportRepository.save(reportDO);
         //发放奖励和修改举报详情内容
         reportService.reportPass(reportDO, false);
     }
@@ -93,6 +99,8 @@ public class ViolationService {
         //如果封禁的话，要改一下删除原因，删除原因，违规原因
         modelDO.setDeleteReason(violateType);
         modelDO.setUpdateTime(curDate);
+        //内容违规则修改内容状态
+        baseModelService.save(modelDO);
         //处理举报
         //封禁用户
         //如果已经是违规，不需要改为删除
@@ -100,16 +108,7 @@ public class ViolationService {
         String vioReason = modelDO.getDeleteReason() + ",";
         //不为官方系统用户才可封禁
         if (!UserType.system.equals(violationUser.getType())) {
-            //轻微
-            if (ViolateType.slightViolation.equals(violateType)) {
-                userViolationHandler(violationUser, vioReason, curDate, ViolateLevel.slight);
-                //一般违规
-            } else if (ViolateType.generalViolationList.contains(violateType)) {
-                userViolationHandler(violationUser, vioReason, curDate, ViolateLevel.general);
-                //严重违规
-            } else {
-                userViolationHandler(violationUser, vioReason, curDate, ViolateLevel.severely);
-            }
+            userViolationHandler(violationUser, vioReason, curDate, violateType);
             userRepository.save(violationUser);
             System.out.println("用户昵称和id为：" + violationUser.getNickname() + ":" + violationUser.getId() + "用户状态改为：" + violationUser.getStatus());
         }
@@ -120,6 +119,32 @@ public class ViolationService {
         reportDO.setAuditNote(auditNote);
         reportDO.setUpdateTime(curDate);
         reportDO.setValid(true);
+        reportRepository.save(reportDO);
+
+
+        //不是轻微违规，则将所有待审核内容改为违规
+        if (ViolateType.slightViolation.equals(violateType)) {
+            //查询用户所有为待审核和预审核的内容，改为违规
+            List<ReportDO> reportDOS = reportStore.queryUserOtherWaitAuditContent(violationUser.getId());
+            for (ReportDO linkReport : reportDOS) {
+                //修改关联内容的状态，为违规
+                BaseModelDO linkModelDO = BaseModelUtils.getModelByReport(linkReport);
+                //修改内容，需要修改状态、删除原因、更新时间
+                linkModelDO.setStatus(ContentStatus.violation);
+                //如果封禁的话，要改一下删除原因，删除原因，违规原因
+                linkModelDO.setDeleteReason(violateType);
+                linkModelDO.setUpdateTime(curDate);
+                //内容违规则修改内容状态
+                baseModelService.save(linkModelDO);
+                //修改举报内容
+                linkReport.setAuditType(ViolateType.otherIllegalLinkage);
+                linkReport.setStatus(ReportStatus.violation);
+                linkReport.setAuditNote("关联其他举报内容违规id：" + reportDO.getId());
+                linkReport.setUpdateTime(curDate);
+                linkReport.setValid(true);
+            }
+            reportRepository.saveAll(reportDOS);
+        }
 
         //如果有举报记录
         //发放奖励和修改举报详情内容
@@ -127,15 +152,28 @@ public class ViolationService {
     }
 
     //更改user状态
-    public void userViolationHandler(UserDO violationUser, String vioReason, Date curDate, String vioLevel) {
+    public void userViolationHandler(UserDO violationUser, String vioReason, Date curDate, String violateType) {
+        String vioLevel;
+        //轻微
+        if (ViolateType.slightViolation.equals(violateType)) {
+            vioLevel = ViolateLevel.slight;
+            //一般违规
+        } else if (ViolateType.generalViolationList.contains(violateType)) {
+            vioLevel = ViolateLevel.general;
+            //严重违规
+        } else {
+            vioLevel = ViolateLevel.severely;
+        }
+
         int violationDay = 0;
+        //轻微违规只删除内容
         if (ViolateLevel.slight.equals(vioLevel)) {
             vioReason += "删除违规内容";
         } else {
             Integer vioCount = violationUser.getViolationCount();
             //一般违规
             if (ViolateLevel.general.equals(vioLevel)) {
-                //第一次不封禁
+                //第一次不封禁,轻微违规
                 if (vioCount < 1) {
                     vioReason += "账号警告";
                 } else {
@@ -151,19 +189,18 @@ public class ViolationService {
                     }
                 }
             } else {
-                if (vioCount < 1) {
+                if (vioCount < 2) {
                     vioReason += "封禁7天";
                     violationDay = 7;
-                } else if (vioCount < 2) {
+                } else if (vioCount < 5) {
                     vioReason += "封禁1月";
                     violationDay = 30;
                 } else {
-                    vioReason += "封禁1年";
-                    violationDay = 365;
+                    vioReason += "封禁3月";
+                    violationDay = 90;
                 }
             }
             //区分轻微、一般违规，和严重违规，一般和严重才增加次数
-            violationUser.setViolationCount(vioCount + 1);
         }
         //所有违规通用
         violationUser.setViolationReason(vioReason);
