@@ -15,7 +15,8 @@ public interface UserImgRepository extends JpaRepository<UserImgDO, Integer> {
     @Cacheable(cacheNames = "getUserImgByUserId", key = "#userId")
     List<UserImgDO> findTop3ByUserIdAndStatusInOrderByCreateTimeDesc(Integer userId, List<String> status);
 
-    @CachePut(cacheNames = "getUserImgByUserId", key = "#userImgDO.userId")
+    //需要注意不能使用 @cachePut 上面是数组
+    @CacheEvict(cacheNames = "getUserImgByUserId", key = "#userImgDO.userId")
     UserImgDO save(UserImgDO userImgDO);
 
     Optional<BaseModelDO> findOneByIdAndStatus(Integer id, String status);

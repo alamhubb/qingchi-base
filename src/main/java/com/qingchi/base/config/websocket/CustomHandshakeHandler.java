@@ -6,7 +6,6 @@ import com.qingchi.base.utils.UserUtils;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.web.socket.WebSocketHandler;
-import org.springframework.web.socket.server.jetty.JettyRequestUpgradeStrategy;
 import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
 
 import java.security.Principal;
@@ -26,7 +25,7 @@ public class CustomHandshakeHandler extends DefaultHandshakeHandler {
             ServletServerHttpRequest req = (ServletServerHttpRequest) request;
             token = req.getServletRequest().getParameter("token");
         }
-        UserDO user = UserUtils.getUserByDB(token);
+        UserDO user = UserUtils.getUserByDBNoViolation(token);
         if (user != null) {
             return new WebSocketUser(user.getId().toString());
         } else {
