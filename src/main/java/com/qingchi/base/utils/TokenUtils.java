@@ -21,6 +21,15 @@ public class TokenUtils {
         TokenUtils.tokenKey = tokenKey;
     }
 
+
+    /*private static String socialKey;
+
+    @Value("${config.socialKey}")
+    public void setSocialKey(String socialKey) {
+        TokenUtils.socialKey = socialKey;
+    }*/
+
+
     public final static String TOKEN_NAME = "token";
 
 
@@ -44,13 +53,22 @@ public class TokenUtils {
      * @param userId
      * @return
      */
-    public static String generateToken(Integer userId) {
+    public static String generateTokenById(Integer userId) {
         return Jwts.builder()//返回的字符串便是我们的jwt串了
                 .setSubject(userId + "_" + getUUID())//设置主题
                 .signWith(SignatureAlgorithm.HS256, tokenKey)//设置算法（必须）
                 .compact();//这个是全部设置完成后拼成jwt串的方法
     }
 
+
+    //第一层获用户唯一id和开发秘钥
+    //第二层开发id+上一层token
+    /*public static String generateTokenByUuidAndToken(String userUuid, String secretKey, String key) {
+        return Jwts.builder()//返回的字符串便是我们的jwt串了
+                .setSubject(userUuid + "_" + secretKey + "_" + getUUID())//设置主题
+                .signWith(SignatureAlgorithm.HS256, key)//设置算法（必须）
+                .compact();//这个是全部设置完成后拼成jwt串的方法
+    }*/
 
     //使用websocket时无法获取request必须传入token
     public static String getIdByToken(String token) {
