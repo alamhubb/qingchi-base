@@ -38,7 +38,7 @@ public class ViolateType {
 
 
     public final static List<String> frontShowReportTypes = Arrays.asList(pornInfo, sexy, unfriendly, badAd, lawbreaking, other);
-    public final static List<String> adminFrontShowReportTypes = Arrays.asList(pornInfo, sexy, slightViolation, unfriendly, badAd, lawbreaking, other);
+    public final static List<String> adminFrontShowReportTypes = Arrays.asList(pornInfo, sexy, slightViolation, unfriendly, badAd, lawbreaking, other, noViolation);
 
     //轻微违规
     public final static List<String> slightViolationList = Collections.singletonList(slightViolation);
