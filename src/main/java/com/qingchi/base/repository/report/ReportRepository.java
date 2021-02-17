@@ -26,6 +26,7 @@ public interface ReportRepository extends JpaRepository<ReportDO, Integer> {
 //    List<ReportDO> findTop5ByStatusAndTalkStatusInOrStatusAndUserImgStatusInOrStatusAndCommentStatusInOrStatusAndMessageStatusInOrderByCreateTimeAsc(String status, List<String> talkStatus, String status1, List<String> userImgStatus, String status2, List<String> commentStatus, String status3, List<String> messageStatus);
 
     List<ReportDO> findTop10ByStatusInOrderByCreateTimeAsc(List<String> status);
+    List<ReportDO> findTop20ByStatusInOrderByCreateTimeAsc(List<String> status);
 
 //    List<ReportDO> findTop20ByStatusAndTalkStatusInOrStatusAndUserImgStatusInOrStatusAndCommentStatusInOrStatusAndMessageStatusInOrderByCreateTimeAsc(String status, List<String> talkStatus, String status1, List<String> userImgStatus, String status2, List<String> commentStatus, String status3, List<String> messageStatus);
 
