@@ -24,7 +24,7 @@ public class ContentUnionIdDO {
     //内容类型
     private String contentUnionType;
     //开发者id
-    private String developerId;
+    private Long devId;
     //用户id，分配给哪个用户的
     private Integer userId;
     //内容的唯一id

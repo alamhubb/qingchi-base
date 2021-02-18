@@ -24,7 +24,7 @@ public class StringUtils {
     }
 
     //所有都不为空
-    public static boolean isAllNotEmpty(String... stringList) {
+    public static boolean isNotEmpty(String... stringList) {
         //没有为空的就是都不为空
         return Arrays.stream(stringList).noneMatch(org.apache.commons.lang3.StringUtils::isEmpty);
     }
